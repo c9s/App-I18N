@@ -31,6 +31,9 @@ our $LMExtract = Locale::Maketext::Extract->new(
         verbose => 1,
 );
 
+use MIME::Types ();
+our $MIME = MIME::Types->new();
+
 
 sub update_catalog {
     my ( $self, $translation ) = @_;
@@ -68,6 +71,15 @@ sub update_catalog {
 
 sub guess_appname {
     return lc(basename(getcwd()));
+}
+
+sub _check_mime_type {
+    my $self       = shift;
+    my $local_path = shift;
+    my $mimeobj = $MIME->mimeTypeOf($local_path);
+    my $mime_type = ($mimeobj ? $mimeobj->type : "unknown");
+    return if ( $mime_type =~ /^image/ );
+    return 1;
 }
 
 sub run {
