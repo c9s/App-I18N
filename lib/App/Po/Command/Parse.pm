@@ -29,6 +29,7 @@ our $LMExtract = Locale::Maketext::Extract->new(
             'mason' => [ ] ,
         },
         verbose => 1,
+        warnings => 1,
 );
 
 use MIME::Types ();
@@ -95,10 +96,9 @@ sub run {
 
     }
 
-    # check existing po files
+    # _("check existing po files")
 
-
-    my @files = File::Find::Rule->file->in( @dirs || ( 'lib', 'bin' ) );
+    my @files = File::Find::Rule->file->in( @dirs );
     my $logger = App::Po->logger;
     foreach my $file (@files) {
         next if $file =~ m{(^|/)[\._]svn/};
