@@ -1,9 +1,10 @@
 #!/usr/bin/perl
-use MakePo;
+use lib 'lib';
+use App::Po;
 use strict;
 use warnings;
 my %dp_table = (
-	parse => \&MakePo::parse,
+	parse => \&App::Po::parse,
 	lang => \&lang,
 );
 
@@ -27,7 +28,7 @@ if(exists $dp_table{$cmd}) {
 sub lang {
 	while(my $lg = shift) {
 		eval {
-			MakePo::lang($lg);
+            App::Po::lang($lg);
 			print "new po: po/$lg.po\n";
 		};
 		if($@) {

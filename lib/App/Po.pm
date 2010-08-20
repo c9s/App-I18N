@@ -1,5 +1,4 @@
-#!/usr/bin/perl
-package MakePo;
+package App::Po;
 use File::Copy;
 use File::Find::Rule;
 use File::Path qw/make_path/;
