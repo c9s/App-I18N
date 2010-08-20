@@ -5,8 +5,11 @@ use File::Path qw/make_path/;
 use Locale::Maketext::Extract;
 use Getopt::Long;
 use Exporter 'import';
-use JSON;
+use JSON::XS;
+use YAML::XS;
+
 my @EXPORT = qw(_);
+
 use Carp;
 use strict;
 use warnings;
@@ -17,7 +20,6 @@ sub init {
 	my $self = shift;
 	my $conf = shift;
 
-	use YAML::XS;
 
 	my $config = do {
 		open F, $conf;
@@ -70,19 +72,20 @@ sub lang {
 	unless(-d 'po') {
 		make_path('po');
 	}
-	$lg =~ s/\s+/_/g;
-	$lg =~ s/-/_/g;
-	if(-e "po/$lg.po") {
-		die "po/$lg.po already exists\n";
-	} elsif(-e 'po/app.po') {
-		copy('po/app.po', "po/$lg.po")
-			or die "failed to copy po/app.po to po/$lg.po";
-	} else {
-		#gives a empty po
-		$Ext = Locale::Maketext::Extract->new;
-		$Ext->write_po("po/$lg.po");
-		undef $Ext;
-	}
+    $lg =~ s/\s+/_/g;
+    $lg =~ s/-/_/g;
+    if ( -e "po/$lg.po" ) {
+        die "po/$lg.po already exists\n";
+    } elsif ( -e 'po/app.po' ) {
+        copy( 'po/app.po', "po/$lg.po" )
+            or die "failed to copy po/app.po to po/$lg.po";
+    } else {
+
+        #gives a empty po
+        $Ext = Locale::Maketext::Extract->new;
+        $Ext->write_po("po/$lg.po");
+        undef $Ext;
+    }
 	return 1;
 }
 
@@ -126,9 +129,12 @@ sub parse {
 	}
 }
 
-=dump_js
+=head1 dump_js
+
 	generate a js dict containing all entries
+
 =cut
+
 sub dump_js {
 	my $lg = shift;
 	my $Ext = shift;
@@ -138,7 +144,7 @@ sub dump_js {
 		$entries{$ent} = $Ext->msgstr($ent);
 	}
 	open F, ">po/$lg.js" or die "failed to open po/$lg.js";
-	print F "var dict = ". JSON->new->utf8(0)->encode(\%entries);
+	print F "var dict = ". encode_json(\%entries);
 	close F;
 }
 

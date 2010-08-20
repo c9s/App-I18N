@@ -7,11 +7,15 @@ license  'perl';
 
 build_requires 'Test::More';
 
-# requires 'JSON';
-# requires 'JSON::XS';
-# requires 'File::Temp';
 requires 'LWP::Simple';
 requires 'Exporter::Lite';
+requires 'File::Copy';
+requires 'File::Find::Rule';
+requires 'File::Path';
+requires 'Locale::Maketext::Extract';
+requires 'Getopt::Long';
+requires 'Exporter';
+requires 'JSON::XS';
 
 install_script 'bin/po';
 
