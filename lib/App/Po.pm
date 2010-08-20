@@ -7,8 +7,10 @@ use Getopt::Long;
 use Exporter 'import';
 use JSON::XS;
 use YAML::XS;
+use File::Basename;
+use Cwd;
 
-my @EXPORT = qw(_);
+our @EXPORT = qw(_);
 
 use Carp;
 use strict;
@@ -67,19 +69,28 @@ sub _($@) {
 	return join('', @tokens);
 }
 
+sub guess_appname {
+    return lc(basename(getcwd()));
+}
+
 sub lang {
 	my $lg = shift;
 	unless(-d 'po') {
 		make_path('po');
 	}
+
+    my $appname = guess_appname();
+
     $lg =~ s/\s+/_/g;
     $lg =~ s/-/_/g;
     if ( -e "po/$lg.po" ) {
         die "po/$lg.po already exists\n";
-    } elsif ( -e 'po/app.po' ) {
-        copy( 'po/app.po', "po/$lg.po" )
-            or die "failed to copy po/app.po to po/$lg.po";
-    } else {
+    } 
+    elsif ( -e "po/$appname.po" ) {
+        copy( "po/$appname.po", "po/$lg.po" )
+            or die "failed to copy po/$appname.po to po/$lg.po";
+    } 
+    else {
 
         #gives a empty po
         $Ext = Locale::Maketext::Extract->new;
@@ -109,14 +120,15 @@ sub parse {
 		print "Parsing $path\n";
 	}
 	$Ext->compile(1);
-	print "Update po/app.po\n";
-	$Ext->write_po('po/app.po');
+
+	print "Update po/$appname.po\n";
+    $Ext->write_po("po/$appname.po");
 
 	#update the .pos
-	my @pofiles = File::Find::Rule->file->name("*.po")->not_name("app.po")->in('po');
+    my @pofiles = File::Find::Rule->file->name("*.po")->not_name("$appname.po")->in('po');
 	my $ents = $Ext->compiled_entries;
 	foreach my $po (@pofiles) {
-		print "Update $po\n";
+		print STDERR "Updating $po\n";
 		$Ext->read_po($po);
 		$Ext->set_compiled_entries($ents);
 		$Ext->compile(1);
