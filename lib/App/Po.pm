@@ -1,53 +1,51 @@
 package App::Po;
+use strict;
+use warnings;
+use Carp;
 use File::Copy;
 use File::Find::Rule;
-use File::Path qw/make_path/;
+use File::Path qw/mkpath/;
 use Locale::Maketext::Extract;
 use Getopt::Long;
 use Exporter 'import';
 use JSON::XS;
 use YAML::XS;
 use File::Basename;
+use App::Po::Logger;
 use Cwd;
 
 # our @EXPORT = qw(_);
 
-use Carp;
-use strict;
-use warnings;
-
-our $Ext;
-
-sub init {
-	my $self = shift;
-	my $conf = shift;
+our $VERSION = 0.001;
 
 
-	my $config = do {
-		open F, $conf;
-		local $/;
-		my $ret = <F>;
-		close F;
-		$ret;
-	};
+our $LOGGER;
 
-	$conf = Load $config;
-	$Ext = Locale::Maketext::Extract->new;
-	$self->_load_po($conf->{lang}) if $conf->{lang};
+sub logger {
+    $LOGGER ||= App::Po::Logger->new;
+    return $LOGGER;
 }
 
-sub _load_po {
-	my $self = shift;
-	my $lg = shift;
-	$lg =~ s/\s+/_/g;
-	$lg =~ s/-/_/g;
-	my $path = "po/$lg.po";
-	if(-e $path) {
-		$Ext->read_po($path);
-	} else {
-		croak "cannot read $path: file does not exist\n";
-	}
+=pod
+
+sub ext {
+    return $LMExtract;
 }
+
+
+sub read_potfile {
+    my ($class) = shift;
+    $LMExtract->read_po( );
+}
+
+sub read_lang_po {
+    my ($class,$lang) = @_;
+    my $path = "po/$lang.po";
+	$lang =~ s/\s+/_/g;
+	$lang =~ s/-/_/g;
+    $Ext->read_po($path) if -e $path;
+}
+
 
 sub change_lang ($$) {
 	my $self = shift;
@@ -57,16 +55,16 @@ sub change_lang ($$) {
 }
 
 sub _($@) {
-	my $str = shift;
-	my @args = @_;
-	$str = $Ext->has_msgid($str)?$Ext->msgstr($str):$str;
-	my @tokens = split /(%\d+)/, $str;
-	map {
-		if($_ =~ /^%(\d+)$/) {
-			$_ = $args[$1 - 1];
-		}
-	} @tokens;
-	return join('', @tokens);
+    my $str  = shift;
+    my @args = @_;
+    $str = $Ext->has_msgid($str) ? $Ext->msgstr($str) : $str;
+    my @tokens = split /(%\d+)/, $str;
+    map {
+        if ( $_ =~ /^%(\d+)$/ ) {
+            $_ = $args[ $1 - 1 ];
+        }
+    } @tokens;
+    return join( '', @tokens );
 }
 
 sub guess_appname {
@@ -76,7 +74,7 @@ sub guess_appname {
 sub lang {
 	my $lg = shift;
 	unless(-d 'po') {
-		make_path('po');
+		mkpath ['po'];
 	}
 
     my $appname = guess_appname();
@@ -114,7 +112,7 @@ sub parse {
 	);
 
 	my $rule = File::Find::Rule->file->name("*.pm", "*.pl", "*.js")->start(@paths);
-	make_path('po');
+	mkpath ['po'];
 	while(defined (my $path = $rule->match)) {
 		$Ext->extract_file($path);
 		print "Parsing $path\n";
@@ -142,12 +140,6 @@ sub parse {
 	}
 }
 
-=head1 dump_js
-
-	generate a js dict containing all entries
-
-=cut
-
 sub dump_js {
 	my $lg = shift;
 	my $Ext = shift;
@@ -160,5 +152,7 @@ sub dump_js {
 	print F "var dict = ". encode_json(\%entries);
 	close F;
 }
+
+=cut
 
 1;

@@ -7,17 +7,20 @@ use YAML::XS;
 our $CONFIG;
 
 sub configfile {
-    return File::Spec->catefile( 'etc', 'config.yml' ) );
+    return File::Spec->catfile( 'etc', 'po.yml' );
 }
 
 sub exists {
-	return -e File::Spec->catefile( 'etc' , 'config.yml' );
+	return -e File::Spec->catfile( 'etc' , 'po.yml' );
 }
 
 sub read {
 	my $class = shift;
-	my $configfile = shift;
-	return $CONFIG ||= LoadFile( $configfile || $class->configfile );
+	my $configfile = shift || $class->configfile;
+	if( -e $configfile ) {
+		return $CONFIG ||= YAML::XS::LoadFile($configfile);
+	}
+	return;
 }
 
 1;

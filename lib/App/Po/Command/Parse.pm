@@ -2,6 +2,8 @@ package App::Po::Command::Parse;
 use warnings;
 use strict;
 use Cwd;
+use App::Po::Config;
+use App::Po::Logger;
 use File::Basename;
 use File::Path qw(mkpath);
 use File::Find::Rule;
@@ -72,6 +74,18 @@ sub run {
     my ($self,@args) = @_;
     my $podir = $self->{podir} || 'po';
     my @dirs = @args;
+
+    # try to load application config file
+    my $config = App::Po::Config->read;
+    if( $config ) {
+        my @langs = @{ $config->{I18N}->{langs} };
+
+
+    }
+
+    # check existing po files
+
+
     my @files = File::Find::Rule->file->in( @dirs || ( 'lib', 'bin' ) );
     my $logger = App::Po->logger;
     foreach my $file (@files) {
@@ -84,10 +98,8 @@ sub run {
         $LMExtract->extract_file($file);
     }
 
-    my $appname = lc guess_appname();
-
     mkpath [ $podir ];
-    $self->update_catalog( File::Spec->catfile( $podir , "$appname.pot" ) );
+    $self->update_catalog( File::Spec->catfile( $podir , "app.pot" ) );
 }
 
 

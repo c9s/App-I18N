@@ -1,38 +1,11 @@
 #!/usr/bin/perl
-use lib 'lib';
-use App::Po;
 use strict;
 use warnings;
-my %dp_table = (
-	parse => \&App::Po::parse,
-	lang => \&lang,
-);
+use lib 'lib';
+use App::Po;
+use App::Po::Command;
+use App::Po::Command::Help;
 
-if($#ARGV < 1) {
-	print "usage: ./po parse <file list>\n";
-	exit;
-}
 my $cmd = shift @ARGV;
-
-if(exists $dp_table{$cmd}) {
-	eval {
-		$dp_table{$cmd}(@ARGV)
-	};
-	if($@) {
-		print $@;
-	}
-} else {
-	print "unknown command $cmd\n";
-}
-
-sub lang {
-	while(my $lg = shift) {
-		eval {
-            App::Po::lang($lg);
-			print "new po: po/$lg.po\n";
-		};
-		if($@) {
-			print $@;
-		}
-	}
-}
+my @args = @ARGV;
+App::Po::Command->invoke( $cmd , @args );
