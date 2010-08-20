@@ -10,7 +10,7 @@ use YAML::XS;
 use File::Basename;
 use Cwd;
 
-our @EXPORT = qw(_);
+# our @EXPORT = qw(_);
 
 use Carp;
 use strict;
@@ -121,7 +121,8 @@ sub parse {
 	}
 	$Ext->compile(1);
 
-	print "Update po/$appname.po\n";
+    my $appname = guess_appname();
+	print "Updating po/$appname.po\n";
     $Ext->write_po("po/$appname.po");
 
 	#update the .pos
