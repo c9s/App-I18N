@@ -11,7 +11,7 @@ use Carp;
 use strict;
 use warnings;
 
-our $ext;
+our $Ext;
 
 sub init {
 	my $self = shift;
@@ -28,7 +28,7 @@ sub init {
 	};
 
 	$conf = Load $config;
-	$ext = Locale::Maketext::Extract->new;
+	$Ext = Locale::Maketext::Extract->new;
 	$self->_load_po($conf->{lang}) if $conf->{lang};
 }
 
@@ -39,7 +39,7 @@ sub _load_po {
 	$lg =~ s/-/_/g;
 	my $path = "po/$lg.po";
 	if(-e $path) {
-		$ext->read_po($path);
+		$Ext->read_po($path);
 	} else {
 		croak "cannot read $path: file does not exist\n";
 	}
@@ -48,14 +48,14 @@ sub _load_po {
 sub change_lang ($$) {
 	my $self = shift;
 	my $lg = shift;
-	$ext->clear;
+	$Ext->clear;
 	$self->_load_po($lg);
 }
 
 sub _($@) {
 	my $str = shift;
 	my @args = @_;
-	$str = $ext->has_msgid($str)?$ext->msgstr($str):$str;
+	$str = $Ext->has_msgid($str)?$Ext->msgstr($str):$str;
 	my @tokens = split /(%\d+)/, $str;
 	map {
 		if($_ =~ /^%(\d+)$/) {
@@ -79,9 +79,9 @@ sub lang {
 			or die "failed to copy po/app.po to po/$lg.po";
 	} else {
 		#gives a empty po
-		$ext = Locale::Maketext::Extract->new;
-		$ext->write_po("po/$lg.po");
-		undef $ext;
+		$Ext = Locale::Maketext::Extract->new;
+		$Ext->write_po("po/$lg.po");
+		undef $Ext;
 	}
 	return 1;
 }
@@ -91,7 +91,7 @@ sub parse {
 	my $js;
 	GetOptions('js' => \$js);
 	my @paths = @ARGV;
-	my $ext = Locale::Maketext::Extract->new(
+	my $Ext = Locale::Maketext::Extract->new(
 		plugins => {
 			perl => ['*'],
 		},
@@ -102,26 +102,26 @@ sub parse {
 	my $rule = File::Find::Rule->file->name("*.pm", "*.pl", "*.js")->start(@paths);
 	make_path('po');
 	while(defined (my $path = $rule->match)) {
-		$ext->extract_file($path);
+		$Ext->extract_file($path);
 		print "Parsing $path\n";
 	}
-	$ext->compile(1);
+	$Ext->compile(1);
 	print "Update po/app.po\n";
-	$ext->write_po('po/app.po');
+	$Ext->write_po('po/app.po');
 
 	#update the .pos
 	my @pofiles = File::Find::Rule->file->name("*.po")->not_name("app.po")->in('po');
-	my $ents = $ext->compiled_entries;
+	my $ents = $Ext->compiled_entries;
 	foreach my $po (@pofiles) {
 		print "Update $po\n";
-		$ext->read_po($po);
-		$ext->set_compiled_entries($ents);
-		$ext->compile(1);
-		$ext->write_po($po);
+		$Ext->read_po($po);
+		$Ext->set_compiled_entries($ents);
+		$Ext->compile(1);
+		$Ext->write_po($po);
 		if($js) {
 			my $lg = $po;
 			$lg =~ s#po/(\S+)\.po#$1#;
-			dump_js($lg, $ext);
+			dump_js($lg, $Ext);
 		}
 	}
 }
@@ -131,11 +131,11 @@ sub parse {
 =cut
 sub dump_js {
 	my $lg = shift;
-	my $ext = shift;
-	my $ents = $ext->entries;
+	my $Ext = shift;
+	my $ents = $Ext->entries;
 	my %entries = ();
 	foreach my $ent (keys %$ents) {
-		$entries{$ent} = $ext->msgstr($ent);
+		$entries{$ent} = $Ext->msgstr($ent);
 	}
 	open F, ">po/$lg.js" or die "failed to open po/$lg.js";
 	print F "var dict = ". JSON->new->utf8(0)->encode(\%entries);
