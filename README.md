@@ -1,8 +1,12 @@
 
 # App::Po
 
-## Usage
+## Description
 
+App::Po tries to provide a general po management script for all frameworks |
+applications. 
+
+## Usage
 
 create dictionary files for language:
 
