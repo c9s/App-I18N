@@ -3,13 +3,16 @@
 
 ## Usage
 
-	bin/po lang zh_tw en
-	bin/po parse examples [--js]
 
-	edit po/*.po
-	run examples/test.pl or open examples/tests.html
+create dictionary files for language:
 
-## Update: 
+	po lang zh_tw en
 
-	bin/po parse lib
+parse i18n strings:
+
+	po parse bin lib static share/web/static/js ...
+
+to initialize a system-side i18n database:
+
+	po initdb 
 
