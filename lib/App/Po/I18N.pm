@@ -2,6 +2,8 @@ package App::Po::I18N;
 use warnings;
 use strict;
 
+# this is borrowed from Jifty::I18N
+
 # my $DynamicLH;
 # 
 # our $loaded;
