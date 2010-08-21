@@ -126,6 +126,10 @@ sub extract_messages {
     }
 }
 
+sub print_help_message {
+
+}
+
 sub run {
     my ($self,@args) = @_;
     my $podir = $self->{podir} || 'po';
@@ -137,7 +141,6 @@ sub run {
     # update app.pot catalog
     mkpath [ $podir ];
 
-#     _("check existing po files")
 
     $self->update_catalog( File::Spec->catfile( $podir, $self->pot_name . ".pot") );
     if ( $self->{'language'} ) {
@@ -149,5 +152,9 @@ sub run {
     $self->update_catalogs( $podir );
 }
 
-
 1;
+__END__
+
+_("Check existing po files")
+_("Test %1", 1234 )
+
