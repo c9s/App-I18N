@@ -16,4 +16,9 @@ sub debug {
 	print @_ , "\n";
 }
 
+sub error {
+	my $class = shift;
+	print @_, "\n";
+}
+
 1;

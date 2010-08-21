@@ -7,15 +7,17 @@ use App::Po::Logger;
 use File::Basename;
 use File::Path qw(mkpath);
 use File::Find::Rule;
+use Locale::Maketext::Extract;
 use base qw(App::Po::Command);
 
 use constant USE_GETTEXT_STYLE => 1;
 
 sub options {
     (
-        'q|quiet' => 'quiet',
-        'podir=s' => 'podir',
-        'js'      => 'js',
+    'q|quiet'  => 'quiet',
+    'l|lang=s' => 'language',
+    'podir=s'  => 'podir',
+    'js'       => 'js',
     );
 }
 
@@ -34,7 +36,6 @@ our $LMExtract = Locale::Maketext::Extract->new(
 
 use MIME::Types ();
 our $MIME = MIME::Types->new();
-
 
 sub update_catalog {
     my ( $self, $translation ) = @_;
@@ -67,11 +68,37 @@ sub update_catalog {
 #     $LMExtract->set_lexicon($lexicon);
 #     $LMExtract->write_po($translation);
 #     $LMExtract->set_lexicon($orig_lexicon);
-
 }
+
+sub update_catalogs {
+    my ($self,$podir) = @_;
+    my @catalogs = grep !m{(^|/)(?:\.svn|\.git)/}, 
+                File::Find::Rule->file
+                        ->name('*.po')->in( $podir);
+
+    my $logger = App::Po->logger;
+    unless ( @catalogs ) {
+        $logger->error("You have no existing message catalogs.");
+        $logger->error("Run `po lang <lang>` to create a new one.");
+        $logger->error("Read `po help` to get more info.");
+        return 
+    }
+
+    foreach my $catalog (@catalogs) {
+        $self->update_catalog( $catalog );
+    }
+}
+
+
 
 sub guess_appname {
     return lc(basename(getcwd()));
+}
+
+
+sub pot_name {
+    my $self = shift;
+    return guess_appname();
 }
 
 sub _check_mime_type {
@@ -83,21 +110,9 @@ sub _check_mime_type {
     return 1;
 }
 
-sub run {
-    my ($self,@args) = @_;
-    my $podir = $self->{podir} || 'po';
-    my @dirs = @args;
 
-    # try to load application config file
-    my $config = App::Po::Config->read;
-    if( $config ) {
-        my @langs = @{ $config->{I18N}->{langs} };
-
-
-    }
-
-    # _("check existing po files")
-
+sub extract_messages {
+    my ($self,@dirs) = @_;
     my @files = File::Find::Rule->file->in( @dirs );
     my $logger = App::Po->logger;
     foreach my $file (@files) {
@@ -109,9 +124,29 @@ sub run {
         $logger->info("Extracting messages from '$file'");
         $LMExtract->extract_file($file);
     }
+}
 
+sub run {
+    my ($self,@args) = @_;
+    my $podir = $self->{podir} || 'po';
+    my @dirs = @args;
+
+    my $logger = App::Po->logger;
+    $self->extract_messages( @dirs );
+
+    # update app.pot catalog
     mkpath [ $podir ];
-    $self->update_catalog( File::Spec->catfile( $podir , "app.pot" ) );
+
+#     _("check existing po files")
+
+    $self->update_catalog( File::Spec->catfile( $podir, $self->pot_name . ".pot") );
+    if ( $self->{'language'} ) {
+        $self->update_catalog( File::Spec->catfile(
+            $podir, $self->{'language'} . ".po"
+        ) );
+        return;
+    }
+    $self->update_catalogs( $podir );
 }
 
 
