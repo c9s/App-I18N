@@ -127,7 +127,17 @@ sub extract_messages {
 }
 
 sub print_help_message {
+    print <<END
 
+In your application include the code below:
+
+    use App::Po::I18N;
+
+    sub hello {
+        print _( "Hello %1" , \$world );
+    }
+
+END
 }
 
 sub run {
@@ -150,6 +160,8 @@ sub run {
         return;
     }
     $self->update_catalogs( $podir );
+
+    print_help_message();
 }
 
 1;
