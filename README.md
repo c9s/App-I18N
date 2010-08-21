@@ -3,8 +3,8 @@
 
 ## Description
 
-App::Po tries to provide a general po management script for all frameworks |
-applications. 
+App::Po borrows some good stuff from Jifty::I18N and tries to provide a general
+po management script for all frameworks | applications. 
 
 ## Usage
 
@@ -16,7 +16,13 @@ parse i18n strings:
 
 	po parse bin lib static share/web/static/js ...
 
+
+## **UNDERCONSTRUCTION**
+
 to initialize a system-side i18n database:
 
 	po initdb 
 
+to start a web interface to edit/approve messages.
+
+	po server
