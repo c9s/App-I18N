@@ -13,9 +13,12 @@ requires 'File::Copy';
 requires 'File::Find::Rule';
 requires 'File::Path';
 requires 'Locale::Maketext::Extract';
+requires 'Locale::Maketext::Lexicon';
 requires 'Getopt::Long';
 requires 'Exporter';
 requires 'JSON::XS';
+requires 'Tatsumaki';
+requires 'Plack';
 
 install_script 'bin/po';
 
