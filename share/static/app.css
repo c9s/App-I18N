@@ -1,0 +1,8 @@
+
+input { 
+    font-size: 22px;
+    padding: 3px;
+}
+
+input:focus {  background: #ddd; }
+

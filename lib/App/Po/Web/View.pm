@@ -42,26 +42,8 @@ sub css {
 
 template 'head' => sub {
     my ( $class, $handler ) = @_;
-
     js "/static/jquery-1.4.2.js";
-    # css "blah.js";
-
-
-    style { attr { type is 'text/css' }
-
-        outs_raw <<'END';
-
-input { 
-    font-size: 22px;
-    padding: 3px;
-}
-
-input:focus {  background: #ddd; }
-
-END
-
-    };
-
+    css "/static/app.css";
 };
 
 template '/' => page {
