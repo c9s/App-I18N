@@ -11,6 +11,7 @@ sub page (&) {
         html {
             head {
 
+                show 'head', $class, $handler;
 
             }
 
@@ -23,6 +24,25 @@ sub page (&) {
         };
     }
 }
+
+# move to template helpers
+sub js { 
+    my $file = shift;
+    outs_raw qq|<script type="text/javascript" src="$file"></script>\n|;
+}
+
+sub css {
+    my $file = shift;
+    outs_raw qq|<style type="text/css" src="$file"></style>\n|;
+} 
+
+template 'head' => sub {
+    my ( $class, $handler ) = @_;
+
+    # js "blah.js";
+    # css "blah.js";
+
+};
 
 template '/' => page {
     my ($class,$handler) = @_;
