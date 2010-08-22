@@ -19,10 +19,15 @@ requires 'Exporter';
 requires 'JSON::XS';
 requires 'Tatsumaki';
 requires 'Plack';
+requires 'File::ShareDir';
 
 install_script 'bin/po';
 
 # author_tests('xt');
+
+
+no_index( directory => qw< share > );
+install_share;
 
 auto_install;
 

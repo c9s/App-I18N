@@ -6,6 +6,7 @@ use App::Po::Web::View;
 use Tatsumaki::Application;
 use Plack::Runner;
 use File::Basename;
+use File::ShareDir qw();
 
 sub options {
     (
@@ -16,15 +17,25 @@ sub options {
 sub run {
     my ($self) = @_;
 
-    print "Init Template Declare View: App::Po::Web::View ...\n";
     Template::Declare->init( dispatch_to => ['App::Po::Web::View'] );
 
-    print "Init Tatsumaki::Application ...\n";
     my $app = Tatsumaki::Application->new([
         "(.*)" => "RootHandler"
     ]);
-    $app->template_path(dirname(__FILE__) . "/templates");
-    $app->static_path(dirname(__FILE__) . "/static");
+
+
+    my $shareroot;
+
+
+    if( -e "./share" ) {
+        $shareroot = 'share' ;
+    }
+    else {
+        $shareroot = File::ShareDir::dist_dir( "App-Po" );
+    }
+
+    $app->template_path( $shareroot . "/templates" );
+    $app->static_path( $shareroot . "/static" );
 
     my $runner = Plack::Runner->new;
     $runner->parse_options(@ARGV);
