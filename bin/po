@@ -9,3 +9,4 @@ use App::Po::Command::Help;
 my $cmd = shift @ARGV;
 my @args = @ARGV;
 App::Po::Command->invoke( $cmd , @args );
+

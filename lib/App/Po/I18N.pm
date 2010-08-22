@@ -4,6 +4,8 @@ use strict;
 
 # this is borrowed from Jifty::I18N
 
+our $DynamicLH;
+
 # my $DynamicLH;
 # 
 # our $loaded;
