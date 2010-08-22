@@ -8,11 +8,7 @@ use Plack::Runner;
 use File::Basename;
 use File::ShareDir qw();
 
-sub options {
-    (
-
-    )
-}
+sub options { ( ) }
 
 sub run {
     my ($self) = @_;
