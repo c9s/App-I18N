@@ -49,11 +49,8 @@ template '/' => page {
 
     h1 { "App::Po Web Server is running!" };
 
-
-
-
+    # load all po msgid and msgstr
 
 };
-
 
 1;
