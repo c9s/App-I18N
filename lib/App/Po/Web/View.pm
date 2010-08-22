@@ -43,7 +43,7 @@ sub css {
 template 'head' => sub {
     my ( $class, $handler ) = @_;
 
-    # js "blah.js";
+    js "/static/jquery-1.4.2.js";
     # css "blah.js";
 
 
