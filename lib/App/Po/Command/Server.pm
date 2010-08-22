@@ -15,8 +15,11 @@ sub options {
 
 sub run {
     my ($self) = @_;
+
+    print "Init Template Declare View: App::Po::Web::View ...\n";
     Template::Declare->init( dispatch_to => ['App::Po::Web::View'] );
 
+    print "Init Tatsumaki::Application ...\n";
     my $app = Tatsumaki::Application->new([
         "(.*)" => "RootHandler"
     ]);
@@ -34,6 +37,13 @@ use Tatsumaki;
 use Tatsumaki::Error;
 use Tatsumaki::Application;
 use Template::Declare;
+
+sub post {
+    my ($self,$path) = @_;
+
+
+    $self->finish({ success => 1 });
+}
 
 sub get {
     my ( $self, $path ) = @_;

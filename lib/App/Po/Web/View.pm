@@ -4,6 +4,10 @@ use strict;
 use base qw(Template::Declare);
 use Template::Declare::Tags;
 
+
+# XXX: take this out.
+*_ = sub { return @_; };
+
 sub page (&) {
     my ($ref) = shift;
     return sub {
@@ -42,6 +46,22 @@ template 'head' => sub {
     # js "blah.js";
     # css "blah.js";
 
+
+    style { attr { type is 'text/css' }
+
+        outs_raw <<'END';
+
+input { 
+    font-size: 22px;
+    padding: 3px;
+}
+
+input:focus {  background: #ddd; }
+
+END
+
+    };
+
 };
 
 template '/' => page {
@@ -50,6 +70,25 @@ template '/' => page {
     h1 { "App::Po Web Server is running!" };
 
     # load all po msgid and msgstr
+    form { { method is 'post' }
+
+        div { { class is 'msg-item' }
+
+            div { { class is 'msgid' }
+
+                input { { type is 'text' } }; 
+
+            }
+
+            div { { class is 'msgstr' }
+
+                input { { type is 'text' } }; 
+
+            }
+        }
+
+        input { { type is 'submit' , value is _("Write All") } };
+    };
 
 };
 
