@@ -17,142 +17,34 @@ use Cwd;
 # our @EXPORT = qw(_);
 
 our $VERSION = 0.001;
-
-
 our $LOGGER;
+our $LMExtract;
 
 sub logger {
     $LOGGER ||= App::Po::Logger->new;
     return $LOGGER;
 }
 
-=pod
-
-    sub ext {
-        return $LMExtract;
-    }
-
-
-    sub read_potfile {
-        my ($class) = shift;
-        $LMExtract->read_po( );
-    }
-
-    sub read_lang_po {
-        my ($class,$lang) = @_;
-        my $path = "po/$lang.po";
-        $lang =~ s/\s+/_/g;
-        $lang =~ s/-/_/g;
-        $Ext->read_po($path) if -e $path;
-    }
+sub lm_extract {
+    return $LMExtract ||= Locale::Maketext::Extract->new(
+        # Specify which parser plugins to use
+        plugins => {
+            # Use Perl parser, process files with extension .pl .pm .cgi
+            'Locale::Maketext::Extract::Plugin::PPI' => ['pm','pl'],
+            'tt2' => [ ],
+            'perl' => ['pl','pm','js','json'],
+            'mason' => [ ] ,
+        },
+        verbose => 1,
+        warnings => 1,
+    );
+}
 
 
-    sub change_lang ($$) {
-        my $self = shift;
-        my $lg = shift;
-        $Ext->clear;
-        $self->_load_po($lg);
-    }
 
-    sub _($@) {
-        my $str  = shift;
-        my @args = @_;
-        $str = $Ext->has_msgid($str) ? $Ext->msgstr($str) : $str;
-        my @tokens = split /(%\d+)/, $str;
-        map {
-            if ( $_ =~ /^%(\d+)$/ ) {
-                $_ = $args[ $1 - 1 ];
-            }
-        } @tokens;
-        return join( '', @tokens );
-    }
 
-    sub guess_appname {
-        return lc(basename(getcwd()));
-    }
 
-    sub lang {
-        my $lg = shift;
-        unless(-d 'po') {
-            mkpath ['po'];
-        }
 
-        my $appname = guess_appname();
 
-        $lg =~ s/\s+/_/g;
-        $lg =~ s/-/_/g;
-        if ( -e "po/$lg.po" ) {
-            die "po/$lg.po already exists\n";
-        } 
-        elsif ( -e "po/$appname.po" ) {
-            copy( "po/$appname.po", "po/$lg.po" )
-                or die "failed to copy po/$appname.po to po/$lg.po";
-        } 
-        else {
-
-            #gives a empty po
-            $Ext = Locale::Maketext::Extract->new;
-            $Ext->write_po("po/$lg.po");
-            undef $Ext;
-        }
-        return 1;
-    }
-
-    sub parse {
-        @ARGV = @_;
-        my $js;
-        GetOptions('js' => \$js);
-        my @paths = @ARGV;
-        my $Ext = Locale::Maketext::Extract->new(
-            plugins => {
-                perl => ['*'],
-            },
-            #verbose => 1,
-            warnings => 1,
-        );
-
-        my $rule = File::Find::Rule->file->name("*.pm", "*.pl", "*.js")->start(@paths);
-        mkpath ['po'];
-        while(defined (my $path = $rule->match)) {
-            $Ext->extract_file($path);
-            print "Parsing $path\n";
-        }
-        $Ext->compile(1);
-
-        my $appname = guess_appname();
-        print "Updating po/$appname.po\n";
-        $Ext->write_po("po/$appname.po");
-
-        #update the .pos
-        my @pofiles = File::Find::Rule->file->name("*.po")->not_name("$appname.po")->in('po');
-        my $ents = $Ext->compiled_entries;
-        foreach my $po (@pofiles) {
-            print STDERR "Updating $po\n";
-            $Ext->read_po($po);
-            $Ext->set_compiled_entries($ents);
-            $Ext->compile(1);
-            $Ext->write_po($po);
-            if($js) {
-                my $lg = $po;
-                $lg =~ s#po/(\S+)\.po#$1#;
-                dump_js($lg, $Ext);
-            }
-        }
-    }
-
-    sub dump_js {
-        my $lg = shift;
-        my $Ext = shift;
-        my $ents = $Ext->entries;
-        my %entries = ();
-        foreach my $ent (keys %$ents) {
-            $entries{$ent} = $Ext->msgstr($ent);
-        }
-        open F, ">po/$lg.js" or die "failed to open po/$lg.js";
-        print F "var dict = ". encode_json(\%entries);
-        close F;
-    }
-
-=cut
 
 1;
