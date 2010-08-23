@@ -23,15 +23,14 @@ sub run {
 
     Template::Declare->init( dispatch_to => ['App::Po::Web::View'] );
 
-    App::Po->extract_messages( @dirs );
-
-    # update app.pot catalog
-    mkpath [ $podir ];
-
-    App::Po->update_catalog( 
-            File::Spec->catfile( $podir, 
-                App::Po->pot_name . ".pot") );
-
+#     App::Po->extract_messages( @dirs );
+# 
+#     # update app.pot catalog
+#     mkpath [ $podir ];
+# 
+#     App::Po->update_catalog( 
+#             File::Spec->catfile( $podir, 
+#                 App::Po->pot_name . ".pot") );
 
     my $translation = File::Spec->catfile( $podir, $self->{language} . ".po");
     my $lme = App::Po->lm_extract;

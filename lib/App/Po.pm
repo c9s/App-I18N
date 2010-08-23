@@ -11,6 +11,7 @@ use Exporter 'import';
 use JSON::XS;
 use YAML::XS;
 use File::Basename;
+use Locale::Maketext::Extract;
 use App::Po::Logger;
 use Cwd;
 use MIME::Types ();
@@ -133,6 +134,29 @@ sub update_catalogs {
 }
 
 
+sub read_po_file {
+    my ($self,$path) = @_;
+    open my $fh , "<" , $path or die( "can not open po file: $path\n" );
+    my $lexs = $self->read_po( $fh);
+    close $fh;
+    return $lexs;
+}
+
+# should pass a handle to this.
+sub read_po {
+    my ( $self, $fh ) = @_;
+    use Locale::Maketext::Lexicon::Gettext;
+    Locale::Maketext::Lexicon::set_option( 'allow_empty' => 1 );
+    Locale::Maketext::Lexicon::set_option( 'use_fuzzy'   => 1 );
+    Locale::Maketext::Lexicon::set_option( 'encoding'    => "UTF-8" );
+    Locale::Maketext::Lexicon::set_option( 'style'       => 'gettext' );
+
+    my %Lexicon;
+
+    %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<$fh>) };
+    map { delete $Lexicon{$_} if /^__/ } keys %Lexicon;
+    return \%Lexicon;
+}
 
 
 1;
