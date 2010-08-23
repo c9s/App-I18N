@@ -3,6 +3,8 @@ use warnings;
 use strict;
 use base qw(Template::Declare);
 use Template::Declare::Tags;
+use utf8;
+use Encode;
 
 our $CURRENT_LANG;
 
@@ -65,28 +67,11 @@ template '/' => page {
     my $lang = $CURRENT_LANG;
     my $LME = App::Po->lm_extract();
 
-    $LME->read_po( "po/$lang.po" );
 
-    $LME->set_compiled_entries;
-    $LME->compile(1);
+    my $pofile = "po/$lang.po";
+    $LME->read_po( $pofile ) if -f $pofile;
 
-    # $LME->write_po($translation);
-
-    my $orig_lexicon = $LME->lexicon;
-    use Data::Dumper; warn Dumper( $orig_lexicon );
-
-
-#     my @files = File::Find::Rule->file->in( qw(lib) );
-#     foreach my $file (@files) {
-#         next if $file =~ m{(^|/)[\._]svn/};
-#         next if $file =~ m{\~$};
-#         next if $file =~ m{\.pod$};
-#         $LMExtract->extract_file($file);
-#     }
-
-    my $pofile = "po/en.po";
-    my $lex = App::Po->read_po_file( $pofile );
-
+    my $lex = $LME->lexicon;
 
     # load all po msgid and msgstr
     form { { method is 'post' }
@@ -109,13 +94,13 @@ template '/' => page {
             div { { class is 'msgitem' }
                 div { { class is 'msgid' }
                     textarea {  { name is 'msgid[]' };
-                        outs $msgid;
+                        outs decode_utf8 $msgid;
                     };
                 }
 
                 div { { class is 'msgstr' }
                     textarea {  { name is 'msgstr[]' };
-                        outs $msgstr;
+                        outs decode_utf8 $msgstr;
                     };
                 }
 

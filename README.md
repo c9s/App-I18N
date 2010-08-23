@@ -24,6 +24,10 @@ start a web server to edit po file of specified language:
 
     po server --lang en
 
+extract message from files and start a web server:
+
+    po server --dir lib --dir share/static --lang en
+
 ## **UNDERCONSTRUCTION**
 
 to initialize a system-side i18n database:

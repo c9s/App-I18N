@@ -17,22 +17,30 @@ sub options { (
     'podir=s'  => 'podir',
     ) }
 
+
+
 sub run {
     my ($self) = @_;
     my $podir = $self->{podir} || 'po';
-    my @dirs = @{ $self->{directories} || [ 'lib' ] };
-
+    my @dirs = @{ $self->{directories} || []  };
 
     Template::Declare->init( dispatch_to => ['App::Po::Web::View'] );
 
-#     App::Po->extract_messages( @dirs );
-# 
-#     # update app.pot catalog
-#     mkpath [ $podir ];
-# 
-#     App::Po->update_catalog( 
-#             File::Spec->catfile( $podir, 
-#                 App::Po->pot_name . ".pot") );
+    if( @dirs ) {
+        App::Po->extract_messages( @dirs );
+        mkpath [ $podir ];
+        App::Po->update_catalog( 
+                File::Spec->catfile( $podir, 
+                    App::Po->pot_name . ".pot") );
+
+        if ( $self->{language} ) {
+            App::Po->update_catalog( 
+                    File::Spec->catfile( $podir, $self->{'language'} . ".po") );
+        }
+        else {
+            App::Po->update_catalogs( $podir );
+        }
+    }
 
     my $translation;
     if( $self->{pofile} ) {

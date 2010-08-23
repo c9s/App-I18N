@@ -31,6 +31,11 @@ sub logger {
     return $LOGGER;
 }
 
+Locale::Maketext::Lexicon::set_option( 'allow_empty' => 1 );
+Locale::Maketext::Lexicon::set_option( 'use_fuzzy'   => 1 );
+Locale::Maketext::Lexicon::set_option( 'encoding'    => "UTF-8" );
+Locale::Maketext::Lexicon::set_option( 'style'       => 'gettext' );
+
 sub lm_extract {
     return $LMExtract ||= Locale::Maketext::Extract->new(
         plugins => {
@@ -142,14 +147,12 @@ sub read_po_file {
     return $lexs;
 }
 
+
+# XXX: remove this
 # should pass a handle to this.
 sub read_po {
     my ( $self, $fh ) = @_;
     use Locale::Maketext::Lexicon::Gettext;
-    Locale::Maketext::Lexicon::set_option( 'allow_empty' => 1 );
-    Locale::Maketext::Lexicon::set_option( 'use_fuzzy'   => 1 );
-    Locale::Maketext::Lexicon::set_option( 'encoding'    => "UTF-8" );
-    Locale::Maketext::Lexicon::set_option( 'style'       => 'gettext' );
 
     my %Lexicon;
 
