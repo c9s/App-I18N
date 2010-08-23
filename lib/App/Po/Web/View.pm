@@ -41,9 +41,14 @@ sub css {
 
 template 'head' => sub {
     my ( $class, $handler ) = @_;
+
+    outs_raw qq|<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n|;
+
+
     js qw(
         /static/jquery-1.4.2.js
         /static/jquery.jgrowl.js
+        /static/app.js
     );
     css qw(
         /static/app.css
@@ -79,12 +84,18 @@ template '/' => page {
 #         $LMExtract->extract_file($file);
 #     }
 
-
-    my $lex = App::Po->read_po_file( "po/en.po" );
+    my $pofile = "po/en.po";
+    my $lex = App::Po->read_po_file( $pofile );
 
 
     # load all po msgid and msgstr
     form { { method is 'post' }
+
+        div {
+            outs "Editing po file: " . $pofile;
+        }
+
+        input { { type is 'hidden',  name is 'pofile' , value is $pofile } };
 
         div { { class is 'msgitem' }
             div { { class is 'msgid column-header' } _("MsgID") }
@@ -97,23 +108,20 @@ template '/' => page {
 
             div { { class is 'msgitem' }
                 div { { class is 'msgid' }
-                    # input { { type is 'text' } }; 
-                    textarea {  
-                        $msgid;
+                    textarea {  { name is 'msgid[]' };
+                        outs $msgid;
                     };
                 }
 
                 div { { class is 'msgstr' }
-                    # input { { type is 'text' } }; 
-                    textarea {  
-                        $msgstr;
+                    textarea {  { name is 'msgstr[]' };
+                        outs $msgstr;
                     };
                 }
 
-                div { { class is 'savethis' }
-                    input { { type is 'button' , value is _("Save This") } };
-
-                };
+#                 div { { class is 'savethis' }
+#                     input { { type is 'button' , value is _("Save This") } };
+#                 };
             }
 
 
@@ -122,7 +130,11 @@ template '/' => page {
 
         div { { class is 'clear' } };
         div { { style is 'width: 80%; text-align:right;' };
-            input { { type is 'submit' , value is _("Write All") } };
+            input { { 
+                type is 'submit' , 
+                value is _("Write All") ,
+                onclick is qq|return writeAll(this);|
+                } };
         }
     };
 

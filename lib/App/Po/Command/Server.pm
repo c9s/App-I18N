@@ -11,15 +11,17 @@ use File::ShareDir qw();
 use File::Path qw(mkpath);
 
 sub options { (
-        'l|lang=s' => 'language',
-        'dir=s@'   => 'directories',
-        'podir=s'  => 'podir',
-        ) }
+    'l|lang=s' => 'language',
+    'f|file=s' => 'pofile',
+    'dir=s@'   => 'directories',
+    'podir=s'  => 'podir',
+    ) }
 
 sub run {
     my ($self) = @_;
     my $podir = $self->{podir} || 'po';
-    my @dirs = @{ $self->{directories} || "lib" };
+    my @dirs = @{ $self->{directories} || [ 'lib' ] };
+
 
     Template::Declare->init( dispatch_to => ['App::Po::Web::View'] );
 
@@ -32,14 +34,21 @@ sub run {
 #             File::Spec->catfile( $podir, 
 #                 App::Po->pot_name . ".pot") );
 
-    my $translation = File::Spec->catfile( $podir, $self->{language} . ".po");
+    my $translation;
+    if( $self->{pofile} ) {
+        $translation = $self->{pofile};
+    }
+    elsif ($self->{language} ) {
+        $translation = File::Spec->catfile( $podir, $self->{language} . ".po");
+    }
+    else {
+        die;
+    }
+
     my $lme = App::Po->lm_extract;
     $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
-    my $orig_lexicon;
     $lme->set_compiled_entries;
     $lme->compile(USE_GETTEXT_STYLE);
-    $orig_lexicon = $lme->lexicon;
-
 
     # $lme->write_po($translation);
 #     if ( $self->{'language'} ) {

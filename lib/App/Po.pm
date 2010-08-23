@@ -14,6 +14,7 @@ use File::Basename;
 use Locale::Maketext::Extract;
 use App::Po::Logger;
 use Cwd;
+use Encode;
 use MIME::Types ();
 
 use constant USE_GETTEXT_STYLE => 1;
@@ -86,7 +87,6 @@ sub update_catalog {
 
 
     my $lme = $self->lm_extract;
-
     $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
 
     my $orig_lexicon;
@@ -154,7 +154,8 @@ sub read_po {
     my %Lexicon;
 
     %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<$fh>) };
-    map { delete $Lexicon{$_} if /^__/ } keys %Lexicon;
+    map { delete $Lexicon{$_} if /^__/ }   keys %Lexicon;
+    map { Encode::_utf8_on($Lexicon{$_}) } keys %Lexicon;
     return \%Lexicon;
 }
 
