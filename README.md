@@ -16,6 +16,13 @@ parse i18n strings:
 
 	po parse bin lib static share/web/static/js ...
 
+start a web server to edit po file:
+
+    po server -f po/en.po
+
+start a web server to edit po file of specified language:
+
+    po server --lang en
 
 ## **UNDERCONSTRUCTION**
 
