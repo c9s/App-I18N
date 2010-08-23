@@ -50,9 +50,7 @@ sub run {
 
     App::Po->update_catalog( File::Spec->catfile( $podir, App::Po->pot_name . ".pot") );
     if ( $self->{'language'} ) {
-        App::Po->update_catalog( File::Spec->catfile(
-            $podir, $self->{'language'} . ".po"
-        ) );
+        App::Po->update_catalog( File::Spec->catfile( $podir, $self->{'language'} . ".po") );
         return;
     }
     App::Po->update_catalogs( $podir );

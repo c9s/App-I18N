@@ -3,10 +3,12 @@ use warnings;
 use strict;
 use base qw(App::Po::Command);
 use App::Po::Web::View;
+use App::Po::Web::Handler;
 use Tatsumaki::Application;
 use Plack::Runner;
 use File::Basename;
 use File::ShareDir qw();
+use File::Path qw(mkpath);
 
 sub options { (
         'l|lang=s' => 'language',
@@ -16,17 +18,46 @@ sub options { (
 
 sub run {
     my ($self) = @_;
+    my $podir = $self->{podir} || 'po';
+    my @dirs = @{ $self->{directories} || "lib" };
 
     Template::Declare->init( dispatch_to => ['App::Po::Web::View'] );
 
+    App::Po->extract_messages( @dirs );
 
+    # update app.pot catalog
+    mkpath [ $podir ];
+
+    App::Po->update_catalog( 
+            File::Spec->catfile( $podir, 
+                App::Po->pot_name . ".pot") );
+
+
+    my $translation = File::Spec->catfile( $podir, $self->{language} . ".po");
+    my $lme = App::Po->lm_extract;
+    $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
+    my $orig_lexicon;
+    $lme->set_compiled_entries;
+    $lme->compile(USE_GETTEXT_STYLE);
+    $orig_lexicon = $lme->lexicon;
+
+
+    # $lme->write_po($translation);
+#     if ( $self->{'language'} ) {
+#         App::Po->update_catalog( File::Spec->catfile(
+#             $podir, 
+#             $self->{language} . ".po"
+#         ) );
+#         return;
+#     }
+#     App::Po->update_catalogs( $podir );
 
     $App::Po::Web::View::CURRENT_LANG = $self->{language} || "en";
+    $App::Po::Web::View::LEXICON = $orig_lexicon;
 
     my $app = Tatsumaki::Application->new([
-        "(/.*)" => "RootHandler"
+        "(/.*)" => "App::Po::Web::Handler"
     ]);
-
 
     my $shareroot;
     if( -e "./share" ) {
@@ -44,30 +75,6 @@ sub run {
     my $runner = Plack::Runner->new;
     $runner->parse_options(@ARGV);
     $runner->run($app->psgi_app);
-}
-
-package RootHandler;
-use base qw(Tatsumaki::Handler);
-use Tatsumaki;
-use Tatsumaki::Error;
-use Tatsumaki::Application;
-use Template::Declare;
-
-sub post {
-    my ($self,$path) = @_;
-
-    if( $path eq '/save_item' ) {
-
-    }
-
-    $self->finish({ success => 1 });
-}
-
-sub get {
-    my ( $self, $path ) = @_;
-    $path ||= "/";
-    $self->write( Template::Declare->show( $path, $self ) );
-    $self->finish;
 }
 
 1;

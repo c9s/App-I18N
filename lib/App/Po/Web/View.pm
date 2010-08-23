@@ -5,8 +5,7 @@ use base qw(Template::Declare);
 use Template::Declare::Tags;
 
 our $CURRENT_LANG;
-
-
+our $LEXICON;
 
 # XXX: take this out.
 *_ = sub { return @_; };
@@ -71,8 +70,6 @@ template '/' => page {
 
     my $orig_lexicon = $LME->lexicon;
     use Data::Dumper; warn Dumper( $orig_lexicon );
-    
-    
 
 
 #     my @files = File::Find::Rule->file->in( qw(lib) );
@@ -92,23 +89,33 @@ template '/' => page {
             div { { class is 'msgstr column-header' } _("MsgStr") }
         };
 
-        # foreach messages
-        div { { class is 'msgitem' }
-            div { { class is 'msgid' }
-                # input { { type is 'text' } }; 
-                textarea {   };
+        # XXX: a better way to read po file ? not to parse every time.
+        while( my ($msgid,$msgstr) = each %$LEXICON ) {
+
+            div { { class is 'msgitem' }
+                div { { class is 'msgid' }
+                    # input { { type is 'text' } }; 
+                    textarea {  
+                        $msgid;
+                    };
+                }
+
+                div { { class is 'msgstr' }
+                    # input { { type is 'text' } }; 
+                    textarea {  
+                        $msgstr;
+                    };
+                }
+
+                div { { class is 'savethis' }
+                    input { { type is 'button' , value is _("Save This") } };
+
+                };
             }
 
-            div { { class is 'msgstr' }
-                # input { { type is 'text' } }; 
-                textarea {   };
-            }
 
-            div { { class is 'savethis' }
-                input { { type is 'button' , value is _("Save This") } };
-
-            };
         }
+
 
         div { { class is 'clear' } };
         div { { style is 'width: 80%; text-align:right;' };
