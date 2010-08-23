@@ -1,8 +1,35 @@
 
-input { 
+body {
     font-size: 22px;
-    padding: 3px;
 }
 
-input:focus {  background: #ddd; }
 
+h1,h2,h3 { color: #3F92D2; }
+
+textarea,input { 
+    font-size: 22px;
+    padding: 3px;
+    background: #ded;
+    color: #666;
+}
+
+textarea:focus,
+input:focus {  background: #99CCD2;color: #333; font-weight: bold; }
+
+.msgid { width: 300px; float: left; padding:6px; }
+.msgstr { width: 400px; float: left; padding:6px; }
+
+.msgid textarea,
+.msgid input { width: 300px; }
+
+.msgstr textarea,
+.msgstr input { width: 400px; }
+
+.savethis { float: left; padding: 6px; }
+
+.column-header { color: #66A3D2; }
+.column-header { color: #66A3D2; }
+
+.msgitem { clear: both; }
+
+.clear { clear: both; }

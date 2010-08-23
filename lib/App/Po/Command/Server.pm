@@ -8,27 +8,35 @@ use Plack::Runner;
 use File::Basename;
 use File::ShareDir qw();
 
-sub options { ( ) }
+sub options { (
+        'l|lang=s' => 'language',
+        'dir=s@'   => 'directories',
+        'podir=s'  => 'podir',
+        ) }
 
 sub run {
     my ($self) = @_;
 
     Template::Declare->init( dispatch_to => ['App::Po::Web::View'] );
 
+
+
+    $App::Po::Web::View::CURRENT_LANG = $self->{language} || "en";
+
     my $app = Tatsumaki::Application->new([
-        "(.*)" => "RootHandler"
+        "(/.*)" => "RootHandler"
     ]);
 
 
     my $shareroot;
-
-
     if( -e "./share" ) {
         $shareroot = 'share' ;
     }
     else {
         $shareroot = File::ShareDir::dist_dir( "App-Po" );
     }
+
+    print "using share root: $shareroot\n";
 
     $app->template_path( $shareroot . "/templates" );
     $app->static_path( $shareroot . "/static" );
@@ -48,6 +56,9 @@ use Template::Declare;
 sub post {
     my ($self,$path) = @_;
 
+    if( $path eq '/save_item' ) {
+
+    }
 
     $self->finish({ success => 1 });
 }
