@@ -28,12 +28,11 @@ extract message from files and start a web server:
 
     po server --dir lib --dir share/static --lang en
 
-## **UNDERCONSTRUCTION**
+## **TODO**
 
-to initialize a system-side i18n database:
+* Initialize a system-side i18n database:
 
 	po initdb 
 
-to start a web interface to edit/approve messages.
-
-	po server
+* Initialize a temporary SQLite database for collaborative editing, and write
+back when INT/TERM signal recevied or could be triggered by a submit button.
