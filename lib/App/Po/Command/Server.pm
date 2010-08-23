@@ -26,6 +26,8 @@ sub run {
 
     Template::Declare->init( dispatch_to => ['App::Po::Web::View'] );
 
+    my $lme = App::Po->lm_extract;
+
     if( @dirs ) {
         App::Po->extract_messages( @dirs );
         mkpath [ $podir ];
@@ -53,38 +55,28 @@ sub run {
         die;
     }
 
-    my $lme = App::Po->lm_extract;
-    $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
-    $lme->set_compiled_entries;
-    $lme->compile(USE_GETTEXT_STYLE);
-
-    # $lme->write_po($translation);
-#     if ( $self->{'language'} ) {
-#         App::Po->update_catalog( File::Spec->catfile(
-#             $podir, 
-#             $self->{language} . ".po"
-#         ) );
-#         return;
-#     }
-#     App::Po->update_catalogs( $podir );
-
-    $App::Po::Web::View::CURRENT_LANG = $self->{language} || "en";
-
+#     $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
+#     $lme->set_compiled_entries;
+#     $lme->compile(USE_GETTEXT_STYLE);
+#     $lme->write_po($translation);
 
     use App::Po::Web;
     my $app = App::Po::Web->new([
         "(/.*)" => "App::Po::Web::Handler"
     ]);
 
-    my $shareroot;
-    if( -e "./share" ) {
-        $shareroot = 'share' ;
-    }
-    else {
-        $shareroot = File::ShareDir::dist_dir( "App-Po" );
-    }
+    my $shareroot = 
+        ( -e "./share" ) 
+            ? 'share' 
+            : File::ShareDir::dist_dir( "App-Po" );
 
-    print "using share root: $shareroot\n";
+    print "Share root: $shareroot\n";
+
+    $app->webpo({
+        language  => $self->{language},
+        pofile    => $self->{pofile},
+        shareroot => $shareroot,
+    });
 
     $app->template_path( $shareroot . "/templates" );
     $app->static_path( $shareroot . "/static" );

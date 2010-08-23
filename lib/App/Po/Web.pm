@@ -4,12 +4,11 @@ use strict;
 use base qw(Tatsumaki::Application);
 use Any::Moose;
 
-
-has po_options => 
-    ( is => 'rw' , isa => 'HashRef' , default => sub {  +{  } }  );
-
-
-
-
+has webpo =>
+    ( is => 'rw', isa => 'HashRef', default => sub { 
+        +{
+        
+        }
+    } );
 
 1;

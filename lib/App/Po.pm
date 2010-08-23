@@ -100,23 +100,6 @@ sub update_catalog {
     $lme->set_compiled_entries;
     $lme->compile(USE_GETTEXT_STYLE);
     $lme->write_po($translation);
-
-#     $orig_lexicon = $lme->lexicon;
-#     my $lexicon = { %$orig_lexicon };
-# 
-#     # XXX: cache core_lm
-#     my $core_lm = Locale::Maketext::Extract->new();
-#     Locale::Maketext::Lexicon::set_option('allow_empty' => 1);
-#     # $core_lm->read_po( File::Spec->catfile(  ));
-#     # Locale::Maketext::Lexicon::set_option('allow_empty' => 0);
-#     # for (keys %{ $core_lm->lexicon }) {
-#     #     next unless exists $lexicon->{$_};
-#     #     # keep the local entry overriding core if it exists
-#     #     delete $lexicon->{$_} unless length $lexicon->{$_};
-#     # }
-#     $lme->set_lexicon($lexicon);
-#     $lme->write_po($translation);
-#     $lme->set_lexicon($orig_lexicon);
 }
 
 sub update_catalogs {

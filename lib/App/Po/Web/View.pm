@@ -6,8 +6,6 @@ use Template::Declare::Tags;
 use utf8;
 use Encode;
 
-our $CURRENT_LANG;
-
 # XXX: take this out.
 *_ = sub { return @_; };
 
@@ -59,12 +57,17 @@ template 'head' => sub {
 };
 
 template '/' => page {
+    my ( $class, $handler ) = @_;
 
-    my ($class,$handler) = @_;
 
-    h1 { "Po Web Server: " . $CURRENT_LANG };
 
-    my $lang = $CURRENT_LANG;
+    my $poopts = $handler->application->webpo;
+
+    # h1 { "Po Web Server: " . $CURRENT_LANG };
+
+    use Data::Dumper; warn Dumper( $poopts );
+
+    my $lang = 'en';
     my $LME = App::Po->lm_extract();
 
 
