@@ -2,6 +2,7 @@ package App::Po::Command::Server;
 use warnings;
 use strict;
 use base qw(App::Po::Command);
+use App::Po::Web;
 use App::Po::Web::View;
 use App::Po::Web::Handler;
 use Tatsumaki::Application;
@@ -24,10 +25,9 @@ sub run {
     my $podir = $self->{podir} || 'po';
     my @dirs = @{ $self->{directories} || []  };
 
-    Template::Declare->init( dispatch_to => ['App::Po::Web::View'] );
 
+    # pre-process messages
     my $lme = App::Po->lm_extract;
-
     if( @dirs ) {
         App::Po->extract_messages( @dirs );
         mkpath [ $podir ];
@@ -44,23 +44,14 @@ sub run {
         }
     }
 
-    my $translation;
-    if( $self->{pofile} ) {
-        $translation = $self->{pofile};
-    }
-    elsif ($self->{language} ) {
-        $translation = File::Spec->catfile( $podir, $self->{language} . ".po");
-    }
-    else {
-        die;
-    }
 
 #     $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
 #     $lme->set_compiled_entries;
 #     $lme->compile(USE_GETTEXT_STYLE);
 #     $lme->write_po($translation);
 
-    use App::Po::Web;
+    Template::Declare->init( dispatch_to => ['App::Po::Web::View'] );
+
     my $app = App::Po::Web->new([
         "(/.*)" => "App::Po::Web::Handler"
     ]);
@@ -73,6 +64,7 @@ sub run {
     print "Share root: $shareroot\n";
 
     $app->webpo({
+        podir     => $podir,
         language  => $self->{language},
         pofile    => $self->{pofile},
         shareroot => $shareroot,

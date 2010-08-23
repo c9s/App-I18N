@@ -56,34 +56,26 @@ template 'head' => sub {
     );
 };
 
-template '/' => page {
-    my ( $class, $handler ) = @_;
 
-
-
-    my $poopts = $handler->application->webpo;
-
-    # h1 { "Po Web Server: " . $CURRENT_LANG };
-
-    use Data::Dumper; warn Dumper( $poopts );
-
-    my $lang = 'en';
+template 'edit_po' => sub {
+    my ( $self, $handler, $translation ) = @_;
+    my $po_opts = $handler->application->webpo;
+    my $podir   = $po_opts->{podir};
     my $LME = App::Po->lm_extract();
-
-
-    my $pofile = "po/$lang.po";
-    $LME->read_po( $pofile ) if -f $pofile;
-
+    $LME->read_po( $translation ) if -f $translation;
     my $lex = $LME->lexicon;
+
+    h1 { "Po Web Server: " . $translation };
+
 
     # load all po msgid and msgstr
     form { { method is 'post' }
 
         div {
-            outs "Editing po file: " . $pofile;
+            outs "Editing po file: " . $translation;
         }
 
-        input { { type is 'hidden',  name is 'pofile' , value is $pofile } };
+        input { { type is 'hidden',  name is 'pofile' , value is $translation } };
 
         div { { class is 'msgitem' }
             div { { class is 'msgid column-header' } _("MsgID") }
@@ -125,6 +117,36 @@ template '/' => page {
                 } };
         }
     };
+
+
+
+};
+
+template 'list_po' => sub {
+
+};
+
+template '/' => page {
+    my ( $class, $handler ) = @_;
+
+    my $po_opts = $handler->application->webpo;
+    my $podir   = $po_opts->{podir};
+
+    my $translation = 
+        ( $po_opts->{pofile} )
+            ? $po_opts->{pofile}
+            : $po_opts->{language}
+                ? File::Spec->catfile( $podir, $po_opts->{language} . ".po")
+                : undef;
+
+    if( $translation ) {
+        show 'edit_po', $handler, $translation;
+    }
+    else {
+        # list language
+
+    }
+
 
 };
 
