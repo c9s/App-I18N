@@ -5,7 +5,6 @@ use base qw(Template::Declare);
 use Template::Declare::Tags;
 
 our $CURRENT_LANG;
-our $LEXICON;
 
 # XXX: take this out.
 *_ = sub { return @_; };
@@ -81,6 +80,9 @@ template '/' => page {
 #     }
 
 
+    my $lex = App::Po->read_po_file( "po/en.po" );
+
+
     # load all po msgid and msgstr
     form { { method is 'post' }
 
@@ -89,8 +91,9 @@ template '/' => page {
             div { { class is 'msgstr column-header' } _("MsgStr") }
         };
 
+
         # XXX: a better way to read po file ? not to parse every time.
-        while( my ($msgid,$msgstr) = each %$LEXICON ) {
+        while( my ($msgid,$msgstr) = each %$lex ) {
 
             div { { class is 'msgitem' }
                 div { { class is 'msgid' }

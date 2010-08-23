@@ -52,7 +52,6 @@ sub run {
 #     App::Po->update_catalogs( $podir );
 
     $App::Po::Web::View::CURRENT_LANG = $self->{language} || "en";
-    $App::Po::Web::View::LEXICON = $orig_lexicon;
 
     my $app = Tatsumaki::Application->new([
         "(/.*)" => "App::Po::Web::Handler"
