@@ -70,7 +70,9 @@ sub run {
 
     $App::Po::Web::View::CURRENT_LANG = $self->{language} || "en";
 
-    my $app = Tatsumaki::Application->new([
+
+    use App::Po::Web;
+    my $app = App::Po::Web->new([
         "(/.*)" => "App::Po::Web::Handler"
     ]);
 
