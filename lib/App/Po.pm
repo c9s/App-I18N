@@ -122,28 +122,4 @@ sub update_catalogs {
 }
 
 
-sub read_po_file {
-    my ($self,$path) = @_;
-    open my $fh , "<" , $path or die( "can not open po file: $path\n" );
-    my $lexs = $self->read_po( $fh);
-    close $fh;
-    return $lexs;
-}
-
-
-# XXX: remove this
-# should pass a handle to this.
-sub read_po {
-    my ( $self, $fh ) = @_;
-    use Locale::Maketext::Lexicon::Gettext;
-
-    my %Lexicon;
-
-    %Lexicon = %{ Locale::Maketext::Lexicon::Gettext->parse(<$fh>) };
-    map { delete $Lexicon{$_} if /^__/ }   keys %Lexicon;
-    map { Encode::_utf8_on($Lexicon{$_}) } keys %Lexicon;
-    return \%Lexicon;
-}
-
-
 1;
