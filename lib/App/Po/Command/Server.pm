@@ -11,6 +11,9 @@ use File::Basename;
 use File::ShareDir qw();
 use File::Path qw(mkpath);
 
+
+use constant debug => 1;
+
 sub options { (
     'l|lang=s' => 'language',
     'f|file=s' => 'pofile',
@@ -44,6 +47,13 @@ sub run {
         }
     }
 
+    $SIG{INT} = sub {
+        # XXX: write sqlite data to po file here.
+
+        exit;
+    };
+
+
 
 #     $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
 #     $lme->set_compiled_entries;
@@ -61,7 +71,7 @@ sub run {
             ? 'share' 
             : File::ShareDir::dist_dir( "App-Po" );
 
-    print "Share root: $shareroot\n";
+    print "Share root: $shareroot\n" if debug;
 
     $app->webpo({
         podir     => $podir,
