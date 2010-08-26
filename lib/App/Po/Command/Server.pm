@@ -64,7 +64,7 @@ sub run {
 
     $SIG{INT} = sub {
         # XXX: write sqlite data to po file here.
-
+        $db->write_to_pofile(  );
         exit;
     };
 
