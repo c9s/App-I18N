@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-use Test::More tests => 8;
+use Test::More tests => 10;
 use utf8;
 use lib 'lib';
 use App::Po::DB;
@@ -21,3 +21,8 @@ ok( $entry->lang );
 ok( $entry->msgstr );
 
 is( $entry->msgstr , '測試' );
+
+
+my $entries = $db->fetch_table();
+ok( @$entries );
+is( scalar(@$entries) , 1 );

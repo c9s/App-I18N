@@ -62,7 +62,10 @@ template 'edit_po' => sub {
     my $po_opts = $handler->application->webpo;
     my $podir   = $po_opts->{podir};
     my $LME = App::Po->lm_extract();
+
+
     $LME->read_po( $translation ) if -f $translation;
+
     my $lex = $LME->lexicon;
 
     h1 { "Po Web Server: " . $translation };

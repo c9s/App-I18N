@@ -46,6 +46,22 @@ sub find {
     );
 }
 
+sub fetch_table {
+    my $self = shift;
+    my $sth  =$self->dbh->prepare( qq| select * from po_string where lang = ? | );
+    $sth->execute( $self->lang );
+    my @result;
+    while( my $row = $sth->fetchrow_hashref ) {
+        push @result, MsgEntry->new(
+            id     => $row->{id},
+            lang   => $row->{lang},
+            msgid  => $row->{msgid},
+            msgstr => $row->{msgstr},
+        );
+    }
+    return \@result;
+}
+
 
 package MsgEntry;
 use Any::Moose;
