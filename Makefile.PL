@@ -20,6 +20,9 @@ requires 'JSON::XS';
 requires 'Tatsumaki';
 requires 'Plack';
 requires 'File::ShareDir';
+requires 'DBI';
+requires 'DBIx::Class';
+requires 'DBD::SQLite';
 
 install_script 'bin/po';
 
