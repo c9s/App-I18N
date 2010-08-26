@@ -47,6 +47,21 @@ sub run {
         }
     }
 
+
+    # init po database in memory
+    my $db;
+    eval {
+        require App::Po::DB;
+    };
+    if( $@ ) {
+
+    }
+    $db = App::Po::DB->new( lang => 'zh-tw' );
+    # $db->insert( 'test' , '測試' );
+
+
+
+
     $SIG{INT} = sub {
         # XXX: write sqlite data to po file here.
 
