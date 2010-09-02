@@ -94,8 +94,6 @@ sub update_catalog {
     my $lme = $self->lm_extract;
     $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
 
-    my $orig_lexicon;
-
     # Reset previously compiled entries before a new compilation
     $lme->set_compiled_entries;
     $lme->compile(USE_GETTEXT_STYLE);

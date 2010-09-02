@@ -57,14 +57,16 @@ sub run {
 
     }
     $db = App::Po::DB->new( lang => 'zh-tw' );
+
+    print "Importing messages to sqlite memory database.\n";
+    $db->import_po( "zh-tw", File::Spec->join( $self->{podir}, "zh-tw.po" ) );
+
     # $db->insert( 'test' , '測試' );
-
-
-
 
     $SIG{INT} = sub {
         # XXX: write sqlite data to po file here.
-        $db->write_to_pofile(  );
+        print "Exporting messages from sqlite memory database.\n";
+        $db->export_po(  );
         exit;
     };
 

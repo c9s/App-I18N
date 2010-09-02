@@ -24,11 +24,11 @@ sub BUILD {
     $self->dbh( $dbh );
 }
 
-
 sub insert {
-    my ( $self, $msgid, $msgstr ) = @_;
-    my $lang = $self->lang;
-    my $sth = $self->dbh->prepare(qq| INSERT INTO po_string (  lang , msgid , msgstr ) VALUES ( ? , ? , ? ); |);
+    my ( $self, $msgid, $msgstr , $lang ) = @_;
+    $lang ||= $self->lang;
+    my $sth = $self->dbh->prepare(
+        qq| INSERT INTO po_string (  lang , msgid , msgstr ) VALUES ( ? , ? , ? ); |);
     $sth->execute( $lang, $msgid, $msgstr );
 }
 
@@ -60,6 +60,36 @@ sub fetch_table {
         );
     }
     return \@result;
+}
+
+
+sub import_lexicon {
+    my ( $self, $lex ) = @_;
+    while ( my ( $msgid, $msgstr ) = each %$lex ) {
+        $self->insert( $msgid, $msgstr, $lang );
+    }
+}
+
+
+sub import_po {
+    my ( $self, $lang, $pofile ) = @_;
+    my $lme = App::Po->lm_extract;
+    $lme->read_po($pofile) if -f $pofile && $pofile !~ m/pot$/;
+    $self->import_lexicon( $lme->lexicon );
+}
+
+sub export_lexicon {
+    my ($self) = @_;
+    my $lexicon;
+
+
+    return $lexicon;
+}
+
+sub export_po {
+    my ( $self, $podir ) = @_;
+
+    # $lme->write_po($pofile);
 }
 
 
