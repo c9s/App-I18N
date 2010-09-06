@@ -57,17 +57,22 @@ sub run {
     if( $@ ) {
         warn $@;
     }
-    $db = App::Po::DB->new( lang => 'zh-tw' );
+    # $db = App::Po::DB->new( lang => 'zh-tw' );
+    $db = App::Po::DB->new();
 
-    print "Importing messages to sqlite memory database.\n";
-    $db->import_po( "zh-tw", File::Spec->join( $self->{podir}, "zh-tw.po" ) );
+    $logger->info("Importing messages to sqlite memory database.");
+    my @pofiles = ( $self->{pofile} ) || File::Find::Rule->file()->name("*.po")->in( $podir );
 
-    # $db->insert( 'test' , '測試' );
+    for my $file ( @pofiles ) {
+        my ($langname) = ( $file =~ m{([a-zA-Z-_]+)\.po$} );
+        $logger->info( "Importing $langname: $file" );
+        $db->import_po( $langname , $file );
+    }
 
     $SIG{INT} = sub {
         # XXX: write sqlite data to po file here.
-        print "Exporting messages from sqlite memory database.\n";
-        $db->export_po(  );
+        $logger->info("Exporting messages from sqlite memory database.");
+        # $db->export_po(  );
         exit;
     };
 

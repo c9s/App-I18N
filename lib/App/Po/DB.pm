@@ -7,9 +7,6 @@ use Any::Moose;
 has dbh => 
     ( is => 'rw' );
 
-has lang => 
-    ( is => 'rw' , isa => 'Str' );
-
 sub BUILD {
     my ($self,$args) = @_;
     # my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile","","");
@@ -25,16 +22,14 @@ sub BUILD {
 }
 
 sub insert {
-    my ( $self, $msgid, $msgstr , $lang ) = @_;
-    $lang ||= $self->lang;
+    my ( $self , $lang , $msgid, $msgstr ) = @_;
     my $sth = $self->dbh->prepare(
         qq| INSERT INTO po_string (  lang , msgid , msgstr ) VALUES ( ? , ? , ? ); |);
     $sth->execute( $lang, $msgid, $msgstr );
 }
 
 sub find {
-    my ( $self, $msgid ) = @_;
-    my $lang = $self->lang;
+    my ( $self, $lang , $msgid ) = @_;
     my $sth = $self->dbh->prepare(qq| SELECT * FROM po_string WHERE lang = ? AND msgid = ? LIMIT 1;|);
     $sth->execute( $lang, $msgid );
     my @data = $sth->fetchrow_array();
@@ -46,10 +41,10 @@ sub find {
     );
 }
 
-sub fetch_table {
-    my $self = shift;
+sub fetch_lang_table {
+    my ( $self, $lang ) = @_;
     my $sth  =$self->dbh->prepare( qq| select * from po_string where lang = ? | );
-    $sth->execute( $self->lang );
+    $sth->execute( $lang );
     my @result;
     while( my $row = $sth->fetchrow_hashref ) {
         push @result, MsgEntry->new(

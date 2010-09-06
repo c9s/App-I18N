@@ -6,12 +6,12 @@ use App::Po::DB;
 
 use_ok('App::Po::DB');
 
-my $db = App::Po::DB->new( lang => 'zh-tw' );
+my $db = App::Po::DB->new();
 ok( $db );
 
-$db->insert( 'test' , '測試' );
+$db->insert( 'zh-tw',  'test' , '測試' );
 
-$entry = $db->find( 'test' );
+$entry = $db->find( 'zh-tw', 'test' );
 
 
 ok( $entry );
@@ -23,6 +23,6 @@ ok( $entry->msgstr );
 is( $entry->msgstr , '測試' );
 
 
-my $entries = $db->fetch_table();
+my $entries = $db->fetch_lang_table( 'zh-tw' );
 ok( @$entries );
 is( scalar(@$entries) , 1 );
