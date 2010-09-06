@@ -11,6 +11,5 @@ function _(str, args)
 			tokens[i] = args[parseInt(match[1]) - 1];
 		}
 	}
-	str = tokens.join("");
-	return str;
+	return tokens.join("");
 }
