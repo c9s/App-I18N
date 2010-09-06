@@ -147,7 +147,11 @@ template '/' => page {
     }
     else {
         # list language
-
+        use File::Find::Rule;
+        my @files  = File::Find::Rule->file()->name( "*.po" )->in( $podir );
+        foreach my $file (@files) {
+            input { attr { type is 'button', value is $file } };
+        }
     }
 
 

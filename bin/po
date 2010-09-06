@@ -5,8 +5,9 @@ use lib 'lib';
 use App::Po;
 use App::Po::Command;
 use App::Po::Command::Help;
+use App::Po::Command::Parse;
+use App::Po::Command::Lang;
 
 my $cmd = shift @ARGV;
 my @args = @ARGV;
 App::Po::Command->invoke( $cmd , @args );
-

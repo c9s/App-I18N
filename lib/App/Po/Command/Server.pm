@@ -29,6 +29,8 @@ sub run {
     my @dirs = @{ $self->{directories} || []  };
 
 
+    my $logger = App::Po->logger;
+
     # pre-process messages
     my $lme = App::Po->lm_extract;
     if( @dirs ) {
@@ -47,14 +49,13 @@ sub run {
         }
     }
 
-
     # init po database in memory
     my $db;
     eval {
         require App::Po::DB;
     };
     if( $@ ) {
-
+        warn $@;
     }
     $db = App::Po::DB->new( lang => 'zh-tw' );
 
@@ -69,8 +70,6 @@ sub run {
         $db->export_po(  );
         exit;
     };
-
-
 
 #     $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
 #     $lme->set_compiled_entries;
@@ -88,7 +87,10 @@ sub run {
             ? 'share' 
             : File::ShareDir::dist_dir( "App-Po" );
 
-    print "Share root: $shareroot\n" if debug;
+    $logger->info("share root: $shareroot");
+    $logger->info("podir: $podir") if $podir;
+    $logger->info("pofile: @{[ $self->{pofile} ]}") if $self->{pofile};
+    $logger->info("language: @{[ $self->{language} ]}") if $self->{language};
 
     $app->webpo({
         podir     => $podir,

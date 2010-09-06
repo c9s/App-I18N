@@ -64,7 +64,7 @@ sub fetch_table {
 
 
 sub import_lexicon {
-    my ( $self, $lex ) = @_;
+    my ( $self , $lang , $lex ) = @_;
     while ( my ( $msgid, $msgstr ) = each %$lex ) {
         $self->insert( $msgid, $msgstr, $lang );
     }
@@ -75,7 +75,7 @@ sub import_po {
     my ( $self, $lang, $pofile ) = @_;
     my $lme = App::Po->lm_extract;
     $lme->read_po($pofile) if -f $pofile && $pofile !~ m/pot$/;
-    $self->import_lexicon( $lme->lexicon );
+    $self->import_lexicon( $lang , $lme->lexicon );
 }
 
 sub export_lexicon {
