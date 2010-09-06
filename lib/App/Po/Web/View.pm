@@ -61,14 +61,23 @@ template 'edit_po' => sub {
     my ( $self, $handler, $translation ) = @_;
     my $po_opts = $handler->application->webpo;
     my $podir   = $po_opts->{podir};
+    unless( $translation ) {
+        $translation = File::Spec->catfile( $podir , $handler->request->param( 'lang' ) . ".po" );
+    }
+
+    my $logger = App::Po->logger();
+
+    unless( -f $translation ) {
+        $logger->info( "$translation doesnt exist." );
+    }
+
+
     my $LME = App::Po->lm_extract();
-
-
     $LME->read_po( $translation ) if -f $translation;
 
     my $lex = $LME->lexicon;
 
-    h1 { "Po Web Server: " . $translation };
+    h3 { "Po Web Server: " . $translation };
 
 
     # load all po msgid and msgstr
@@ -125,15 +134,14 @@ template 'edit_po' => sub {
 
 };
 
-template 'list_po' => sub {
-
-};
-
 template '/' => page {
     my ( $class, $handler ) = @_;
 
     my $po_opts = $handler->application->webpo;
     my $podir   = $po_opts->{podir};
+
+
+    h1 {  "App::Po Server" }
 
     my $translation = 
         ( $po_opts->{pofile} )
@@ -150,9 +158,23 @@ template '/' => page {
         use File::Find::Rule;
         my @files  = File::Find::Rule->file()->name( "*.po" )->in( $podir );
         foreach my $file (@files) {
-            input { attr { type is 'button', value is $file } };
+            my ($langname) = ( $file =~ m{([a-zA-Z-_]+)\.po$}i );
+            input { attr { type is 'button', value is $file , onclick is qq|
+                    return (function(e){  
+                        jQuery.ajax({
+                            url: '/edit_po',
+                            data: { lang: "$langname" },
+                            dataType: 'html',
+                            type: 'get',
+                            success: function(html) {
+                                jQuery('#panel').html( html );
+                            }
+                        });
+            })(this);| } };
         }
-        div {
+
+        div { { id is 'panel' };
+
 
 
 
