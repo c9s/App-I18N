@@ -6,6 +6,64 @@
 App::Po borrows some good stuff from Jifty::I18N and tries to provide a general
 po management script for all frameworks | applications. 
 
+
+## Basic flow
+
+
+### Basic po file manipulation:
+
+parse strings from `lib` path:
+
+    $ cd app
+    $ po parse lib
+
+this will generate:
+
+    po/app.pot
+
+create new language file (po file):
+
+    po lang en
+    po lang fr
+    po lang ja
+    po lang zh_TW
+
+this will generate:
+
+    po/en.po
+    po/fr.po
+    po/ja.po
+    po/zh_TW.po
+
+do translations
+
+    ....
+
+### Generate locale and mo file for php-gettext:
+
+parse strings from `.` path and use --locale (locale directory structure) , --mo (generate mo file) option:
+
+    $ cd app
+    $ po parse --locale --mo .
+
+this will generate:
+    
+    po/app.pot
+
+create new language file (po file and mo file) in locale directory structure:
+
+    po lang  --locale --mo en
+    po lang  --locale --mo zh_TW
+
+this will generate:
+
+    po/en/LC_MESSAGES/app.po
+    po/en/LC_MESSAGES/app.mo
+    po/zh_TW/LC_MESSAGES/app.po
+    po/zh_TW/LC_MESSAGES/app.mo
+
+(you can use --podir option to generate those stuff to other directory)
+
 ## Usage
 
 create dictionary files for language:
