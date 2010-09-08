@@ -16,6 +16,7 @@ use base qw(App::Po::Command);
 
 sub options { (
     'q|quiet'  => 'quiet',
+    'locale'   => 'locale',
     'podir=s'  => 'podir',
     ) }
 
@@ -26,17 +27,22 @@ sub run {
 
 	# create language file
     my $podir = $self->{podir} || 'po';
-    my $potfile = File::Spec->catfile( $podir, App::Po->pot_name . ".pot") ;
+    my $pot_name = App::Po->pot_name;
 
+    my $potfile = File::Spec->catfile( $podir, $pot_name . ".pot") ;
     if( -e $potfile ) {
-
         $logger->info( "$potfile found." );
-        my $langfile = File::Spec->join( $podir , $lang . ".po" );
+        my $langfile;
+        if( $self->{locale} ) {
+            $langfile = File::Spec->join( $podir , $lang , 'LC_MESSAGES' , $pot_name . ".po" );
+        }
+        else {
+            $langfile = File::Spec->join( $podir , $lang . ".po" );
+        }
 
         use File::Copy;
         $logger->info(  "$langfile created.");
         copy( $potfile , $langfile );
-
 
         $logger->info( "Done" );
     }
