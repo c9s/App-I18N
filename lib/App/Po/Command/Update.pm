@@ -22,9 +22,12 @@ sub run {
 
     my @pofiles = File::Find::Rule->file->name( "*.po" )->in( $podir );
     for my $pofile ( @pofiles ) {
+        $logger->info( "Updating $pofile" );
         if( $self->{mo} ) {
-            $logger->info( "Updating $pofile" );
-            qx{msgfmt -v $pofile};
+            my $mofile = $pofile;
+            $mofile =~ s{\.po$}{.mo};
+            $logger->info( "Updating $mofile" );
+            qx{msgfmt -v $pofile $mofile};
         }
     }
 }
