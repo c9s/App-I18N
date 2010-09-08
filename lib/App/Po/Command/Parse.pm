@@ -15,6 +15,7 @@ sub options {
     (
     'q|quiet'  => 'quiet',
     'l|lang=s' => 'language',
+    'locale'   => 'locale',   # XXX: use locale directory structure
     'podir=s'  => 'podir',
     'js'       => 'js',
     );
