@@ -43,6 +43,16 @@ do translations
 
     ....
 
+when you added more message in your application. you might need to update po
+messages, but you dont have to delete/recreate these po files, you can just parse your messages again
+all of your translations will be kept. eg:
+
+    $ po parse parse lib
+
+do translation again ...
+
+
+
 ### Generate locale and mo file for php-gettext or anyother gettext i18n app:
 
 parse strings from `.` path and use --locale (locale directory structure) , --mo (generate mo file) option:
@@ -60,8 +70,8 @@ please modify the CHARSET in po/app.pot.
 
 create new language file (po file and mo file) in locale directory structure:
 
-    po lang  --locale --mo en
-    po lang  --locale --mo zh_TW
+    $ po lang  --locale --mo en
+    $ po lang  --locale --mo zh_TW
 
 this will generate:
 
@@ -71,6 +81,12 @@ this will generate:
     po/zh_TW/LC_MESSAGES/app.mo
 
 (you can use --podir option to generate those stuff to other directory)
+
+    ... do translation here ...
+
+if you use mo file , you might need to update mo file.
+
+    $ po update --mo
 
 
 For example:
@@ -92,23 +108,23 @@ For example:
 
 create dictionary files for language:
 
-	po lang zh_tw en
+	$ po lang zh_tw en
 
 parse i18n strings:
 
-	po parse bin lib static share/web/static/js ...
+	$ po parse bin lib static share/web/static/js ...
 
 start a web server to edit po file:
 
-    po server -f po/en.po
+    $ po server -f po/en.po
 
 start a web server to edit po file of specified language:
 
-    po server --lang en
+    $ po server --lang en
 
 extract message from files and start a web server:
 
-    po server --dir lib --dir share/static --lang en
+    $ po server --dir lib --dir share/static --lang en
 
 ## **TODO**
 
