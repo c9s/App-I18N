@@ -27,7 +27,7 @@ sub run {
             my $mofile = $pofile;
             $mofile =~ s{\.po$}{.mo};
             $logger->info( "Updating $mofile" );
-            qx{msgfmt -v $pofile $mofile};
+            qx{msgfmt -v $pofile -o $mofile};
         }
     }
 }
