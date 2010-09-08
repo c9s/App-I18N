@@ -48,10 +48,19 @@ sub run {
     # update app.pot catalog
     mkpath [ $podir ];
 
+    my $pot_name = App::Po->pot_name;
+    App::Po->update_catalog( File::Spec->catfile( $podir, $pot_name . ".pot") );
 
-    App::Po->update_catalog( File::Spec->catfile( $podir, App::Po->pot_name . ".pot") );
     if ( $self->{'language'} ) {
-        App::Po->update_catalog( File::Spec->catfile( $podir, $self->{'language'} . ".po") );
+        # locale structure
+        #    locale/{lang}/LC_MESSAGES/{domain}.po
+        #    {podir}/{lang}/LC_MESSAGES/{pot_name}.po
+        if( $self->{locale} ) {
+            App::Po->update_catalog( File::Spec->catfile( $podir, $self->{'language'} , "LC_MESSAGES" , $pot_name . ".po") );
+        }
+        else {
+            App::Po->update_catalog( File::Spec->catfile( $podir, $self->{'language'} . ".po") );
+        }
         return;
     }
     App::Po->update_catalogs( $podir );
