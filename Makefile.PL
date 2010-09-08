@@ -23,7 +23,6 @@ requires 'File::ShareDir';
 requires 'DBI';
 requires 'DBIx::Class';
 requires 'DBD::SQLite';
-requires 'Locale::Msgfmt';
 
 install_script 'bin/po';
 

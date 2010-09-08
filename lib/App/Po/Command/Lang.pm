@@ -39,8 +39,6 @@ sub run {
     my ( $self, $lang ) = @_;
 
     my $logger = App::Po->logger();
-
-	# create language file
     my $podir = $self->{podir} || 'po';
 
     mkpath [ $podir ];
@@ -51,17 +49,14 @@ sub run {
     if( -e $potfile ) {
         $logger->info( "$potfile found." );
         my $pofile;
-        my $mofile;
         if( $self->{locale} ) {
 
             mkpath [ File::Spec->join( $podir , $lang , 'LC_MESSAGES' )  ];
             $pofile = File::Spec->join( $podir , $lang , 'LC_MESSAGES' , $pot_name . ".po" );
-            $mofile = File::Spec->join( $podir , $lang , 'LC_MESSAGES' , $pot_name . ".mo" );
 
         }
         else {
             $pofile = File::Spec->join( $podir , $lang . ".po" );
-            $mofile = File::Spec->join( $podir , $lang . ".mo" );
         }
 
         use File::Copy;
@@ -69,8 +64,8 @@ sub run {
         copy( $potfile , $pofile );
 
         if( $self->{mo} ) {
-            use Locale::Msgfmt;
-            msgfmt({in => $pofile , out => $mofile });
+            $logger->info( "Generating MO file for $pofile" );
+            system(qq{msgfmt -v $pofile});
         }
 
         $logger->info( "Done" );

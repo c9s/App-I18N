@@ -103,12 +103,8 @@ sub update_catalog {
     $lme->write_po($translation);
 
     if( $cmd->{mo} ) {
-        my $mofile = $translation;
-        $mofile =~ s{\.po$}{.mo};
-
-        use Locale::Msgfmt;
-        msgfmt({in => $translation , out => $mofile });
-        $logger->info( "Generating MO file: $mofile" );
+        $logger->info( "Generating MO file for $translation." );
+        system(qq{msgfmt -v $translation});
     }
 }
 

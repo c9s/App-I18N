@@ -7,6 +7,7 @@ use App::Po::Command;
 use App::Po::Command::Help;
 use App::Po::Command::Parse;
 use App::Po::Command::Lang;
+use App::Po::Command::Update;
 
 my $cmd = shift @ARGV;
 my @args = @ARGV;

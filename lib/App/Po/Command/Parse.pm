@@ -60,7 +60,6 @@ sub run {
             mkpath [ File::Spec->join(  $podir , $self->{language}  , "LC_MESSAGES" )  ];
 
             my $pofile =  File::Spec->catfile( $podir, $self->{'language'} , "LC_MESSAGES" , $pot_name . ".po");
-            my $mofile =  File::Spec->catfile( $podir, $self->{'language'} , "LC_MESSAGES" , $pot_name . ".mo");
             App::Po->update_catalog( $pofile , $self );
         }
         else {
