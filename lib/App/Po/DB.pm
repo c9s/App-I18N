@@ -57,6 +57,10 @@ sub fetch_lang_table {
     return \@result;
 }
 
+sub write_to_pofile {
+    # XXX:
+
+}
 
 sub import_lexicon {
     my ( $self , $lang , $lex ) = @_;

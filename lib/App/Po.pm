@@ -39,14 +39,13 @@ Locale::Maketext::Lexicon::set_option( 'style'       => 'gettext' );
 sub lm_extract {
     return $LMExtract ||= Locale::Maketext::Extract->new(
         plugins => {
-            'Locale::Maketext::Extract::Plugin::PPI' => ['pm','pl'],
+            'Locale::Maketext::Extract::Plugin::PPI' => [ 'pm','pl' ],
             'tt2' => [ ],
-            'perl' => ['pl','pm','js','json'],
+            # 'perl' => ['pl','pm','js','json'],
+            'perl' => [ '*' ],   # _( ) , gettext( ) , loc( ) ...
             'mason' => [ ] ,
         },
-        verbose => 1,
-        warnings => 1,
-    );
+        verbose => 1, warnings => 1 );
 }
 
 sub guess_appname {
