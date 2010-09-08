@@ -46,31 +46,33 @@ sub run {
     my $pot_name = App::Po->pot_name;
 
     my $potfile = File::Spec->catfile( $podir, $pot_name . ".pot") ;
-    if( -e $potfile ) {
-        $logger->info( "$potfile found." );
-        my $pofile;
-        if( $self->{locale} ) {
-
-            mkpath [ File::Spec->join( $podir , $lang , 'LC_MESSAGES' )  ];
-            $pofile = File::Spec->join( $podir , $lang , 'LC_MESSAGES' , $pot_name . ".po" );
-
-        }
-        else {
-            $pofile = File::Spec->join( $podir , $lang . ".po" );
-        }
-
-        use File::Copy;
-        $logger->info(  "$pofile created.");
-        copy( $potfile , $pofile );
-
-        if( $self->{mo} ) {
-            $logger->info( "Generating MO file for $pofile" );
-            system(qq{msgfmt -v $pofile});
-        }
-
-        $logger->info( "Done" );
+    if( ! -e $potfile ) {
+        $logger->info( "$potfile not found." );
+        return;
     }
 
+    $logger->info( "$potfile found." );
+    my $pofile;
+    if( $self->{locale} ) {
+
+        mkpath [ File::Spec->join( $podir , $lang , 'LC_MESSAGES' )  ];
+        $pofile = File::Spec->join( $podir , $lang , 'LC_MESSAGES' , $pot_name . ".po" );
+
+    }
+    else {
+        $pofile = File::Spec->join( $podir , $lang . ".po" );
+    }
+
+    use File::Copy;
+    $logger->info(  "$pofile created.");
+    copy( $potfile , $pofile );
+
+    if( $self->{mo} ) {
+        $logger->info( "Generating MO file for $pofile" );
+        system(qq{msgfmt -v $pofile});
+    }
+
+    $logger->info( "Done" );
 }
 
 1;
