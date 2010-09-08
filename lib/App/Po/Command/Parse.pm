@@ -10,7 +10,6 @@ use File::Find::Rule;
 use Locale::Maketext::Extract;
 use base qw(App::Po::Command);
 
-
 sub options {
     (
     'q|quiet'  => 'quiet',

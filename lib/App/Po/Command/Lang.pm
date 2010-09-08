@@ -68,8 +68,11 @@ sub run {
     copy( $potfile , $pofile );
 
     if( $self->{mo} ) {
-        $logger->info( "Generating MO file for $pofile" );
-        system(qq{msgfmt -v $pofile});
+
+        my $mofile = $pofile;
+        $mofile =~ s{\.po$}{.mo};
+        $logger->info( "Generating MO file: $mofile" );
+        system(qq{msgfmt -v $pofile -o $mofile});
     }
 
     $logger->info( "Done" );
