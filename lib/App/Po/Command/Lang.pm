@@ -27,6 +27,9 @@ sub run {
 
 	# create language file
     my $podir = $self->{podir} || 'po';
+
+    mkpath [ $podir ];
+
     my $pot_name = App::Po->pot_name;
 
     my $potfile = File::Spec->catfile( $podir, $pot_name . ".pot") ;
@@ -34,6 +37,8 @@ sub run {
         $logger->info( "$potfile found." );
         my $langfile;
         if( $self->{locale} ) {
+
+            mkpath [ File::Spec->join( $podir , $lang , 'LC_MESSAGES' )  ];
             $langfile = File::Spec->join( $podir , $lang , 'LC_MESSAGES' , $pot_name . ".po" );
         }
         else {

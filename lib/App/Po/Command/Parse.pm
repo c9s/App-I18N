@@ -56,6 +56,7 @@ sub run {
         #    locale/{lang}/LC_MESSAGES/{domain}.po
         #    {podir}/{lang}/LC_MESSAGES/{pot_name}.po
         if( $self->{locale} ) {
+            mkpath [ File::Spec->join(  $podir , $self->{language}  , "LC_MESSAGES" )  ];
             App::Po->update_catalog( File::Spec->catfile( $podir, $self->{'language'} , "LC_MESSAGES" , $pot_name . ".po") );
         }
         else {
