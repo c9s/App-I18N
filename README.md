@@ -88,21 +88,12 @@ if you use mo file , you might need to update mo file.
 
     $ po update --mo
 
+eg:
 
-For example:
-
--Locale-Maketext-Lexicon-0.82  % tree po 
-
-    po
-    |-- en
-    |   `-- LC_MESSAGES
-    |       |-- locale-maketext-lexicon-0.82.mo
-    |       `-- locale-maketext-lexicon-0.82.po
-    |-- locale-maketext-lexicon-0.82.pot
-    `-- zh_TW
-        `-- LC_MESSAGES
-            |-- locale-maketext-lexicon-0.82.mo
-            `-- locale-maketext-lexicon-0.82.po
+    -project (master) % po update --mo --podir locale
+        Updating locale/zh_TW/LC_MESSAGES/project.po
+        Updating locale/zh_TW/LC_MESSAGES/project.mo
+        9 translated messages, 53 untranslated messages.
 
 ## Usage
 
