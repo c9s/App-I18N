@@ -39,7 +39,7 @@ do translations
 
     ....
 
-### Generate locale and mo file for php-gettext:
+### Generate locale and mo file for php-gettext or anyother gettext i18n app:
 
 parse strings from `.` path and use --locale (locale directory structure) , --mo (generate mo file) option:
 
