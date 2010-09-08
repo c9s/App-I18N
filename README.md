@@ -64,6 +64,22 @@ this will generate:
 
 (you can use --podir option to generate those stuff to other directory)
 
+
+For example:
+
+-Locale-Maketext-Lexicon-0.82  % tree po 
+
+    po
+    |-- en
+    |   `-- LC_MESSAGES
+    |       |-- locale-maketext-lexicon-0.82.mo
+    |       `-- locale-maketext-lexicon-0.82.po
+    |-- locale-maketext-lexicon-0.82.pot
+    `-- zh_TW
+        `-- LC_MESSAGES
+            |-- locale-maketext-lexicon-0.82.mo
+            `-- locale-maketext-lexicon-0.82.po
+
 ## Usage
 
 create dictionary files for language:
