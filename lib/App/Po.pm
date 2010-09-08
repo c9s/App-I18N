@@ -76,6 +76,8 @@ sub extract_messages {
         next if $file =~ m{(^|/)[\._]svn/};
         next if $file =~ m{\~$};
         next if $file =~ m{\.pod$};
+        next if $file =~ m{^\.git};
+
         next unless $self->_check_mime_type($file);
 
         $logger->info("Extracting messages from '$file'");
