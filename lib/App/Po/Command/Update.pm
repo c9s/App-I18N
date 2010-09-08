@@ -12,6 +12,7 @@ use base qw(App::Po::Command);
 sub options { (
     'mo'       => 'mo',   # generate mo file
     'podir=s'  => 'podir',
+    'g|gettext'  => 'gettext',
     ) }
 
 sub run {
@@ -19,6 +20,7 @@ sub run {
     my $logger = App::Po->logger();
     my $podir = $self->{podir} || 'po';
 
+    $self->{mo} = $self->{locale} = 1 if $self->{gettext};
 
     my @pofiles = File::Find::Rule->file->name( "*.po" )->in( $podir );
     for my $pofile ( @pofiles ) {

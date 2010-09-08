@@ -15,18 +15,23 @@ use File::Path qw(mkpath);
 use constant debug => 1;
 
 sub options { (
-    'l|lang=s' => 'language',
-    'f|file=s' => 'pofile',
-    'dir=s@'   => 'directories',
-    'podir=s'  => 'podir',
-    ) }
+    'l|lang=s'  => 'language',
+    'f|file=s'  => 'pofile',
+    'dir=s@'    => 'directories',
+    'podir=s'   => 'podir',
+    'g|gettext' => 'gettext',
+    'mo'        => 'mo',
+    'locale'    => 'locale',
+) }
 
 
 
 sub run {
     my ($self) = @_;
     my $podir = $self->{podir} || 'po';
+    $self->{mo} = $self->{locale} = 1 if $self->{gettext};
     my @dirs = @{ $self->{directories} || []  };
+
 
 
     my $logger = App::Po->logger;

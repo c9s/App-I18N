@@ -19,6 +19,9 @@ use base qw(App::Po::Command);
                 create new po file from pot file in locale directory structure:
                     {podir}/{lang}/LC_MESSAGES/{potname}.po
 
+    --gettext
+                this enable --mo and --locale.
+
     -q
     --quiet         
                 just be quiet
@@ -33,6 +36,8 @@ sub options { (
     'locale'   => 'locale',
     'mo'       => 'mo',   # generate mo file
     'podir=s'  => 'podir',
+    'g|gettext'  => 'gettext',
+    'gettext'  => 'gettext',
     ) }
 
 sub run {
@@ -40,6 +45,8 @@ sub run {
 
     my $logger = App::Po->logger();
     my $podir = $self->{podir} || 'po';
+
+    $self->{mo} = $self->{locale} = 1 if $self->{gettext};
 
     mkpath [ $podir ];
 

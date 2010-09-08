@@ -16,6 +16,7 @@ sub options {
     'l|lang=s' => 'language',
     'locale'   => 'locale',   # XXX: use locale directory structure
     'podir=s'  => 'podir',
+    'g|gettext'  => 'gettext',
     'mo'       => 'mo',
     'js'       => 'js',
     );
@@ -41,8 +42,10 @@ END
 sub run {
     my ($self,@args) = @_;
     my $podir = $self->{podir} || 'po';
-    my @dirs = @args;
 
+    $self->{mo} = $self->{locale} = 1 if $self->{gettext};
+
+    my @dirs = @args;
     App::Po->extract_messages( @dirs );
 
     # update app.pot catalog
