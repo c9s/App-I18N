@@ -21,6 +21,10 @@ this will generate:
 
     po/app.pot
 
+please modify the CHARSET in po/app.pot.
+
+    ... modify CHARSET ...
+
 create new language file (po file):
 
     po lang en
@@ -49,6 +53,10 @@ parse strings from `.` path and use --locale (locale directory structure) , --mo
 this will generate:
     
     po/app.pot
+
+please modify the CHARSET in po/app.pot.
+
+    ... modify CHARSET ...
 
 create new language file (po file and mo file) in locale directory structure:
 
