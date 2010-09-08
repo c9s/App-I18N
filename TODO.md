@@ -9,3 +9,5 @@
 
     $ po parsedb -hlocalhost -uroot -p1234 dbname table_name column_name
 
+x mo file 
+x locale structure
