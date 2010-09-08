@@ -12,11 +12,26 @@ use base qw(App::Po::Command);
 =head1 Lang Command
 
 
+    --mo        
+                generate mo file
+
+    --locale    
+                create new po file from pot file in locale directory structure:
+                    {podir}/{lang}/LC_MESSAGES/{potname}.po
+
+    -q
+    --quiet         
+                just be quiet
+
+    --podir={path}  
+                po directory. potfile will be generated in {podir}/{appname}.pot
+
 =cut
 
 sub options { (
     'q|quiet'  => 'quiet',
     'locale'   => 'locale',
+    'mo'       => 'mo',   # generate mo file
     'podir=s'  => 'podir',
     ) }
 
@@ -35,23 +50,31 @@ sub run {
     my $potfile = File::Spec->catfile( $podir, $pot_name . ".pot") ;
     if( -e $potfile ) {
         $logger->info( "$potfile found." );
-        my $langfile;
+        my $pofile;
+        my $mofile;
         if( $self->{locale} ) {
 
             mkpath [ File::Spec->join( $podir , $lang , 'LC_MESSAGES' )  ];
-            $langfile = File::Spec->join( $podir , $lang , 'LC_MESSAGES' , $pot_name . ".po" );
+            $pofile = File::Spec->join( $podir , $lang , 'LC_MESSAGES' , $pot_name . ".po" );
+            $mofile = File::Spec->join( $podir , $lang , 'LC_MESSAGES' , $pot_name . ".mo" );
+
         }
         else {
-            $langfile = File::Spec->join( $podir , $lang . ".po" );
+            $pofile = File::Spec->join( $podir , $lang . ".po" );
+            $mofile = File::Spec->join( $podir , $lang . ".mo" );
         }
 
         use File::Copy;
-        $logger->info(  "$langfile created.");
-        copy( $potfile , $langfile );
+        $logger->info(  "$pofile created.");
+        copy( $potfile , $pofile );
+
+        if( $self->{mo} ) {
+            use Locale::Msgfmt;
+            msgfmt({in => $pofile , out => $mofile });
+        }
 
         $logger->info( "Done" );
     }
-
 
 }
 

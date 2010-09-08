@@ -87,11 +87,12 @@ sub extract_messages {
 }
 
 sub update_catalog {
-    my ( $self, $translation ) = @_;
+    my ( $self, $translation , $cmd ) = @_;
+
+    $cmd ||= {};
 
     my $logger = $self->logger;
     $logger->info( "Updating message catalog '$translation'");
-
 
     my $lme = $self->lm_extract;
     $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
@@ -100,10 +101,19 @@ sub update_catalog {
     $lme->set_compiled_entries;
     $lme->compile(USE_GETTEXT_STYLE);
     $lme->write_po($translation);
+
+    if( $cmd->{mo} ) {
+        my $mofile = $translation;
+        $mofile =~ s{\.po$}{.mo};
+
+        use Locale::Msgfmt;
+        msgfmt({in => $translation , out => $mofile });
+        $logger->info( "Generating MO file: $mofile" );
+    }
 }
 
 sub update_catalogs {
-    my ($self,$podir) = @_;
+    my ($self,$podir , $cmd ) = @_;
     my @catalogs = grep !m{(^|/)(?:\.svn|\.git)/}, 
                 File::Find::Rule->file
                         ->name('*.po')->in( $podir);
@@ -117,7 +127,7 @@ sub update_catalogs {
     }
 
     foreach my $catalog (@catalogs) {
-        $self->update_catalog( $catalog );
+        $self->update_catalog( $catalog , $cmd );
     }
 }
 

@@ -17,6 +17,7 @@ sub options {
     'l|lang=s' => 'language',
     'locale'   => 'locale',   # XXX: use locale directory structure
     'podir=s'  => 'podir',
+    'mo'       => 'mo',
     'js'       => 'js',
     );
 }
@@ -57,14 +58,17 @@ sub run {
         #    {podir}/{lang}/LC_MESSAGES/{pot_name}.po
         if( $self->{locale} ) {
             mkpath [ File::Spec->join(  $podir , $self->{language}  , "LC_MESSAGES" )  ];
-            App::Po->update_catalog( File::Spec->catfile( $podir, $self->{'language'} , "LC_MESSAGES" , $pot_name . ".po") );
+
+            my $pofile =  File::Spec->catfile( $podir, $self->{'language'} , "LC_MESSAGES" , $pot_name . ".po");
+            my $mofile =  File::Spec->catfile( $podir, $self->{'language'} , "LC_MESSAGES" , $pot_name . ".mo");
+            App::Po->update_catalog( $pofile , $self );
         }
         else {
-            App::Po->update_catalog( File::Spec->catfile( $podir, $self->{'language'} . ".po") );
+            App::Po->update_catalog( File::Spec->catfile( $podir, $self->{'language'} . ".po") , $self );
         }
         return;
     }
-    App::Po->update_catalogs( $podir );
+    App::Po->update_catalogs( $podir , $self );
 
     print_help_message();
 }
