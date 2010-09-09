@@ -2,11 +2,11 @@
 use Test::More tests => 10;
 use utf8;
 use lib 'lib';
-use App::Po::DB;
+use App::I18N::DB;
 
-use_ok('App::Po::DB');
+use_ok('App::I18N::DB');
 
-my $db = App::Po::DB->new();
+my $db = App::I18N::DB->new();
 ok( $db );
 
 $db->insert( 'zh-tw',  'test' , '測試' );

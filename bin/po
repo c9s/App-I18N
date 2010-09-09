@@ -2,13 +2,13 @@
 use strict;
 use warnings;
 use lib 'lib';
-use App::Po;
-use App::Po::Command;
-use App::Po::Command::Help;
-use App::Po::Command::Parse;
-use App::Po::Command::Lang;
-use App::Po::Command::Update;
+use App::I18N;
+use App::I18N::Command;
+use App::I18N::Command::Help;
+use App::I18N::Command::Parse;
+use App::I18N::Command::Lang;
+use App::I18N::Command::Update;
 
 my $cmd = shift @ARGV;
 my @args = @ARGV;
-App::Po::Command->invoke( $cmd , @args );
+App::I18N::Command->invoke( $cmd , @args );

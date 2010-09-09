@@ -1,9 +1,9 @@
 
-# App::Po
+# App::I18N
 
 ## Description
 
-App::Po borrows some good stuff from Jifty::I18N and tries to provide a general
+App::I18N borrows some good stuff from Jifty::I18N and tries to provide a general
 po management script for all frameworks | applications. 
 
 
