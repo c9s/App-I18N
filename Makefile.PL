@@ -1,7 +1,7 @@
 use inc::Module::Install;
 
-name     'App-Po';
-all_from 'lib/App/Po.pm';
+name     'App-I18N';
+all_from 'lib/App/I18N.pm';
 author   q{Cornelius <cornelius.howl@gmail.com> freehaha};
 license  'perl';
 
