@@ -41,9 +41,14 @@ END
 
 sub run {
     my ($self,@args) = @_;
-    my $podir = $self->{podir} || 'po';
+    my $podir = $self->{podir};
 
     $self->{mo} = $self->{locale} = 1 if $self->{gettext};
+    unless( $podir ) {
+        $podir = 'po' if -e 'po';
+        $podir = 'locale' if -e 'locale' && $self->{locale};
+        $podir ||= 'po';
+    }
 
     my @dirs = @args;
     App::I18N->extract_messages( @dirs );
