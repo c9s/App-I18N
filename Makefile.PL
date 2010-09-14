@@ -2,7 +2,7 @@ use inc::Module::Install;
 
 name     'App-I18N';
 all_from 'lib/App/I18N.pm';
-author   q{Cornelius <cornelius.howl@gmail.com> freehaha};
+author   q{Cornelius <cornelius.howl@gmail.com>};
 license  'perl';
 
 build_requires 'Test::More';
@@ -27,7 +27,6 @@ requires 'DBD::SQLite';
 install_script 'bin/po';
 
 # author_tests('xt');
-
 
 no_index( directory => qw< share > );
 install_share;
