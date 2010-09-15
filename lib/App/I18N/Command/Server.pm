@@ -28,12 +28,16 @@ sub options { (
 
 sub run {
     my ($self) = @_;
-    my $podir = $self->{podir} || 'po';
+
+    my $podir;
     $self->{mo} = $self->{locale} = 1 if $self->{gettext};
+    unless( $podir ) {
+        $podir = 'po' if -e 'po';
+        $podir = 'locale' if -e 'locale' && $self->{locale};
+        $podir ||= 'po';
+    }
+
     my @dirs = @{ $self->{directories} || []  };
-
-
-
     my $logger = App::I18N->logger;
 
     # pre-process messages

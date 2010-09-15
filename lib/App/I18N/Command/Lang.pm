@@ -44,10 +44,14 @@ sub run {
     my ( $self, $lang ) = @_;
 
     my $logger = App::I18N->logger();
-    my $podir = $self->{podir} || 'po';
+    my $podir;
 
     $self->{mo} = $self->{locale} = 1 if $self->{gettext};
-
+    unless( $podir ) {
+        $podir = 'po' if -e 'po';
+        $podir = 'locale' if -e 'locale' && $self->{locale};
+        $podir ||= 'po';
+    }
     mkpath [ $podir ];
 
     my $pot_name = App::I18N->pot_name;
