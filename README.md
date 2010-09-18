@@ -60,6 +60,10 @@ parse strings from `.` path and use --locale (locale directory structure) , --mo
     $ cd app
     $ po parse --locale --mo .
 
+(the same):
+
+    $ po parse -g .
+
 this will generate:
     
     po/app.pot
@@ -72,6 +76,10 @@ create new language file (po file and mo file) in locale directory structure:
 
     $ po lang  --locale --mo en
     $ po lang  --locale --mo zh_TW
+
+(the same):
+
+    $ po lang -g zh_TW
 
 this will generate:
 
