@@ -65,7 +65,7 @@ sub _check_mime_type {
     my $mime_type = ($mimeobj ? $mimeobj->type : "unknown");
     return if ( $mime_type =~ /^image/ );
     return if ( $mime_type =~ /compressed/ );  # ignore compressed archive files
-    return if ( $mime_type =~ /^application/ );
+    # return if ( $mime_type =~ /^application/ );
     return 1;
 }
 
