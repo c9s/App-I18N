@@ -6,6 +6,16 @@ use strict;
 
 our $DynamicLH;
 
+sub import {
+
+    *_ = sub {
+        # XXX: should do maketext here.
+
+
+    };
+
+}
+
 # my $DynamicLH;
 # 
 # our $loaded;

@@ -16,7 +16,7 @@ sub options {
     'l|lang=s' => 'language',
     'locale'   => 'locale',   # XXX: use locale directory structure
     'podir=s'  => 'podir',
-    'g|gettext'  => 'gettext',
+    'g|gettext' => 'gettext',  # XXX: should just be locale option and merge the 'mo' option
     'mo'       => 'mo',
     'js'       => 'js',
     );
