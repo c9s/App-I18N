@@ -20,7 +20,7 @@ use base qw(App::I18N::Command);
                     {podir}/{lang}/LC_MESSAGES/{potname}.po
 
     --gettext
-                this enable --mo and --locale.
+                this enables --mo and --locale.
 
     -q
     --quiet         
