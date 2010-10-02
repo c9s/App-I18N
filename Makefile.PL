@@ -23,6 +23,8 @@ requires 'File::ShareDir';
 requires 'DBI';
 requires 'DBIx::Class';
 requires 'DBD::SQLite';
+requires 'MIME::Types';
+requires 'App::CLI';
 
 install_script 'bin/po';
 
