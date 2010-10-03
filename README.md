@@ -32,26 +32,22 @@ create new language file (po file):
     po lang ja
     po lang zh_TW
 
-this will generate:
+this generates:
 
     po/en.po
     po/fr.po
     po/ja.po
     po/zh_TW.po
 
-do translations
-
-    ....
+    ... do translation here
 
 when you added more message in your application. you might need to update po
 messages, but you dont have to delete/recreate these po files, you can just parse your messages again
 all of your translations will be kept. eg:
 
-    $ po parse parse lib
+    $ po parse lib
 
-do translation again ...
-
-
+    ... do translation again ...
 
 ### Generate locale and mo file for php-gettext or anyother gettext i18n app:
 
@@ -94,7 +90,7 @@ this will generate:
 
 if you use mo file , you might need to update mo file.
 
-    $ po update --mo
+    $ po update -g
 
 eg:
 
