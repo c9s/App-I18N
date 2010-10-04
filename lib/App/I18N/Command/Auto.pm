@@ -71,27 +71,19 @@ sub run {
 
     my $from_lang = $self->{from};
     my $to_lang   = $self->{to};
-    my $from_pofile;
-    my $to_pofile;
+    my $pofile;
 
     if( $self->{locale} ) {
-        mkpath [ File::Spec->join( $podir , $from_lang , 'LC_MESSAGES' )  ];
-        $from_pofile = File::Spec->join( $podir , $from_lang , 'LC_MESSAGES' , $pot_name . ".po" );
-
-        mkpath [ File::Spec->join( $podir , $to_lang , 'LC_MESSAGES' )  ];
-        $to_pofile = File::Spec->join( $podir , $to_lang , 'LC_MESSAGES' , $pot_name . ".po" );
+        $pofile = File::Spec->join( $podir , $to_lang , 'LC_MESSAGES' , $pot_name . ".po" );
     }
     else {
-        $from_pofile = File::Spec->join( $podir , $from_lang . ".po" );
-
-        $to_pofile = File::Spec->join( $podir , $to_lang . ".po" );
+        $pofile = File::Spec->join( $podir , $to_lang . ".po" );
     }
 
     my $ext = Locale::Maketext::Extract->new;
 
-    $logger->info( "Reading po file: $from_pofile" ) if $self->{verbose};
-    $ext->read_po($from_pofile);
-
+    $logger->info( "Reading po file: $pofile" );
+    $ext->read_po($pofile);
 
     my $from_lang_s = $from_lang;
     my $to_lang_s = $to_lang;
@@ -144,14 +136,14 @@ sub run {
         }
     }
 
-    $logger->info( "Writing po file to $to_pofile" );
-    $ext->write_po($to_pofile);
+    $logger->info( "Writing po file to $pofile" );
+    $ext->write_po($pofile);
 
     if( $self->{mo} ) {
-        my $mofile = $to_pofile;
+        my $mofile = $pofile;
         $mofile =~ s{\.po$}{.mo};
         $logger->info( "Updating MO file: $mofile" );
-        system(qq{msgfmt -v $to_pofile -o $mofile});
+        system(qq{msgfmt -v $pofile -o $mofile});
     }
 
     $logger->info( "Done" );
