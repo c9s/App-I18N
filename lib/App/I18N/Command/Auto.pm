@@ -139,6 +139,7 @@ sub run {
                 # XXX: let it retry for 3 times
                 $retry = 2;
                 $logger->error( "REST API ERROR: $@ , $!" );
+                $logger->info( "Retrying ..." );
             }
         }
     }
