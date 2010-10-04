@@ -108,7 +108,7 @@ sub run {
 
         $i = $msgstr if $msgstr && $self->{msgstr};
 
-        $logger->info( "Translating: [ $i ]" ) if $self->{verbose};
+        $logger->info( "Translating: [ $i ]" );
         $logger->info( encode_utf8("  Original translation: [ $msgstr ]") ) if $msgstr;
 
         my $retry = 1;
