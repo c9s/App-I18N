@@ -19,9 +19,9 @@ sub run {
     my ( $self, $lang ) = @_;
     my $logger = App::I18N->logger();
 
-    $self->{mo} = 1 if $self->{locale};
     my $podir = $self->{podir};
     $podir = App::I18N->guess_podir( $self ) unless $podir;
+    $self->{mo} = 1 if $self->{locale};
 
     my @pofiles = File::Find::Rule->file->name( "*.po" )->in( $podir );
     for my $pofile ( @pofiles ) {

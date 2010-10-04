@@ -44,9 +44,9 @@ END
 sub run {
     my ($self,@args) = @_;
 
-    $self->{mo} = 1 if $self->{locale};
     my $podir = $self->{podir};
     $podir = App::I18N->guess_podir( $self ) unless $podir;
+    $self->{mo} = 1 if $self->{locale};
 
 
     my @dirs = @args;

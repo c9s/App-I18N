@@ -43,22 +43,35 @@ sub options {
         'verbose' => 'verbose',
         'msgstr' => 'from_msgstr',   # translate from existing msgstr instead of translating from msgid.
         'overwrite' => 'overwrite',  # overwrite existing msgstr
-        's'         => 'skip_existing'
     )
 }
 
-sub run {
-    my ( $self ) = shift;
-    my $logger = $self->logger();
+=pod
 
+--from 
+
+    from langauge
+
+--to   
+
+    translate to langauge
+
+translate zh_CN po file , msgid language en_US , msgstr language zh_CN
+
+    po auto zh_CN --from en_US --to zh_CN
+
+=cut
+
+sub run {
+    my ( $self , $lang ) = @_;
+    my $logger = $self->logger();
 
     # XXX: check this option
     $self->{backend} ||= 'rest-google';
 
-
-    $self->{mo} = 1 if $self->{locale};
     my $podir = $self->{podir};
     $podir = App::I18N->guess_podir( $self ) unless $podir;
+    $self->{mo} = 1 if $self->{locale};
 
     mkpath [ $podir ];
 
@@ -70,14 +83,14 @@ sub run {
     }
 
     my $from_lang = $self->{from};
-    my $to_lang   = $self->{to};
-    my $pofile;
+    my $to_lang = $self->{to} || $lang;
 
+    my $pofile;
     if( $self->{locale} ) {
-        $pofile = File::Spec->join( $podir , $to_lang , 'LC_MESSAGES' , $pot_name . ".po" );
+        $pofile = File::Spec->join( $podir , $lang , 'LC_MESSAGES' , $pot_name . ".po" );
     }
     else {
-        $pofile = File::Spec->join( $podir , $to_lang . ".po" );
+        $pofile = File::Spec->join( $podir , $lang . ".po" );
     }
 
     my $ext = Locale::Maketext::Extract->new;
@@ -87,7 +100,6 @@ sub run {
 
     my $from_lang_s = $from_lang;
     my $to_lang_s = $to_lang;
-
     ($from_lang_s) = ( $from_lang  =~ m{^([a-z]+)(_\w+)} );
     ($to_lang_s)   = ( $to_lang    =~ m{^([a-z]+)(_\w+)} );
 
@@ -96,7 +108,7 @@ sub run {
     for my $i ($ext->msgids()) {
         my $msgstr = $ext->msgstr( $i );
 
-        next if $msgstr && $self->{skip_existing};
+        next if $msgstr && ! $self->{overwrite};
 
         $i = $msgstr if $msgstr && $self->{msgstr};
 

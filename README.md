@@ -100,9 +100,11 @@ And `locale` directory will enable `--locale` option.
 Auto translate via Google Translate REST API:
 
 Default backend google translate rest, this will translate po/en\_US.po to po/zh\_TW.po.
-when using --locale option , this will translate locale/en_US/LC\_MESSAGES/en_US.po to ...
+when using --locale option , this will translate locale/en\_US/LC\_MESSAGES/en\_US.po to ...
 
-    $ po auto --from en\_US --to zh\_TW   
+    $ po auto zh_TW --from en\_US
+
+    $ po auto zh_CN --from en\_US --to zh_CN
 
     $ po auto --backend google-rest --from en\_US --to zh\_TW
 
