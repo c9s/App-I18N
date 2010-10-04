@@ -20,6 +20,7 @@ lib/App/I18N/Command/Lang.pm
 lib/App/I18N/Command/Parse.pm
 lib/App/I18N/Command/Server.pm
 lib/App/I18N/Command/Update.pm
+lib/App/I18N/Command/Auto.pm
 lib/App/I18N/Config.pm
 lib/App/I18N/DB.pm
 lib/App/I18N/I18N.pm

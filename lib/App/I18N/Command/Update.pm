@@ -20,7 +20,8 @@ sub run {
     my $logger = App::I18N->logger();
 
     $self->{mo} = 1 if $self->{locale};
-    my $podir = App::I18N->guess_podir( $self ) unless $podir;
+    my $podir = $self->{podir};
+    $podir = App::I18N->guess_podir( $self ) unless $podir;
 
     my @pofiles = File::Find::Rule->file->name( "*.po" )->in( $podir );
     for my $pofile ( @pofiles ) {

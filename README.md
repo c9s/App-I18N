@@ -51,14 +51,10 @@ all of your translations will be kept. eg:
 
 ### Generate locale and mo file for php-gettext or anyother gettext i18n app:
 
-parse strings from `.` path and use --locale (locale directory structure) , --mo (generate mo file) option:
+parse strings from `.` path and use --locale (locale directory structure):
 
     $ cd app
-    $ po parse --locale --mo .
-
-(the same):
-
-    $ po parse -g .
+    $ po parse --locale .
 
 this will generate:
     
@@ -70,12 +66,8 @@ please modify the CHARSET in po/app.pot.
 
 create new language file (po file and mo file) in locale directory structure:
 
-    $ po lang  --locale --mo en
-    $ po lang  --locale --mo zh_TW
-
-(the same):
-
-    $ po lang -g zh_TW
+    $ po lang  --locale en
+    $ po lang  --locale zh_TW
 
 this will generate:
 
@@ -90,7 +82,7 @@ this will generate:
 
 if you use mo file , you might need to update mo file.
 
-    $ po update -g
+    $ po update --locale
 
 eg:
 
@@ -99,17 +91,20 @@ eg:
         Updating locale/zh_TW/LC_MESSAGES/project.mo
         9 translated messages, 53 untranslated messages.
 
+Note that if you have `po` or `locale` directory exists, then it will be the default po directory.
 
-## Use Case
+And `locale` directory will enable `--locale` option.
+
+## Auto Translation
 
 Auto translate via Google Translate REST API:
 
 Default backend google translate rest, this will translate po/en\_US.po to po/zh\_TW.po.
-when using -g option , this will translate locale/en_US/LC\_MESSAGES/en_US.po to ...
+when using --locale option , this will translate locale/en_US/LC\_MESSAGES/en_US.po to ...
 
-    $ po auto --from en_US --to zh_TW   
+    $ po auto --from en\_US --to zh\_TW   
 
-    $ po auto --backend google-rest --from en_US --to zh_TW
+    $ po auto --backend google-rest --from en\_US --to zh\_TW
 
 ## Usage
 

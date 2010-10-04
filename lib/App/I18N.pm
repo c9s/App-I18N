@@ -116,8 +116,8 @@ sub guess_podir {
     my ($class,$cmd) = @_;
     my $podir;
     $podir = 'po' if -e 'po';
-    $podir = 'locale' if -e 'locale';
-    $podir = 'locale' if $cmd->{locale};
+    $podir = 'locale' , $cmd->{locale} = 1 if -e 'locale';
+    $podir ||= 'locale' if $cmd->{locale};
     $podir ||= 'po';
     return $podir;
 }

@@ -42,7 +42,8 @@ sub run {
     my $logger = $self->logger();
 
     $self->{mo} = 1 if $self->{locale};
-    my $podir = App::I18N->guess_podir( $self ) unless $podir;
+    my $podir = $self->{podir};
+    $podir = App::I18N->guess_podir( $self ) unless $podir;
 
     mkpath [ $podir ];
 

@@ -28,8 +28,10 @@ sub options { (
 sub run {
     my ($self) = @_;
 
+
     $self->{mo} = 1 if $self->{locale};
-    my $podir = App::I18N->guess_podir( $self ) unless $podir;
+    my $podir = $self->{podir};
+    $podir = App::I18N->guess_podir( $self ) unless $podir;
 
     my @dirs = @{ $self->{directories} || []  };
     my $logger = App::I18N->logger;
