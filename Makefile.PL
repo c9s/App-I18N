@@ -25,6 +25,7 @@ requires 'DBIx::Class';
 requires 'DBD::SQLite';
 requires 'MIME::Types';
 requires 'App::CLI';
+requires 'REST::Google::Translate';
 
 install_script 'bin/po';
 
