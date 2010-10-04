@@ -69,7 +69,6 @@ sub prompt {
     my $ans = <STDIN>;
     chomp($ans);
     $ans ||= "Y";
-    next if $ans =~ /n/i;
     return $ans;
 }
 
@@ -117,6 +116,7 @@ sub run {
 
     REST::Google::Translate->http_referer('http://google.com');
 
+NEXT_MSGID:
     for my $i ($ext->msgids()) {
         my $msgstr = $ext->msgstr( $i );
 
@@ -129,31 +129,12 @@ sub run {
 
         my $retry = 1;
         while($retry--) {
+            my $res;
             eval {
-                my $res = REST::Google::Translate->new(
+                $res = REST::Google::Translate->new(
                             q => $i,
                             langpair => $from_lang_s . '|' . $to_lang_s );
 
-                if ($res->responseStatus == 200) {
-                    my $translated = $res->responseData->translatedText;
-                    if( ($msgstr && $self->{overwrite}) 
-                            || ! $msgstr ) {
-                        if( $msgstr ) {
-                            $logger->info( encode_utf8("  Translation overwrited: [$i] => [$translated]") );
-                        } else {
-                            $logger->info( encode_utf8("  Translation: [$i] => [$translated]" ) );
-                        }
-
-                        if( $self->{prompt} ) {
-                            my $ans = $self->prompt();
-                            next if $ans =~ /n/i;
-                        }
-                        $ext->set_msgstr($i, encode_utf8( $translated ) );
-                    }
-                }
-                else {
-                    $ext->set_msgstr($i, undef) if $self->{overwrite};
-                }
 
             };
             if( $@ ) {
@@ -162,6 +143,28 @@ sub run {
                 $logger->error( "REST API ERROR: $@ , $!" );
                 $logger->info( "Retrying ..." );
             }
+
+            if ($res->responseStatus == 200) {
+                my $translated = $res->responseData->translatedText;
+                if( ($msgstr && $self->{overwrite}) 
+                        || ! $msgstr ) {
+                    if( $msgstr ) {
+                        $logger->info( encode_utf8("  Translation overwrited: [$i] => [$translated]") );
+                    } else {
+                        $logger->info( encode_utf8("  Translation: [$i] => [$translated]" ) );
+                    }
+
+                    if( $self->{prompt} ) {
+                        my $ans = $self->prompt();
+                        next NEXT_MSGID if $ans =~ /n/i;
+                    }
+                    $ext->set_msgstr($i, encode_utf8( $translated ) );
+                }
+            }
+            else {
+                $ext->set_msgstr($i, undef) if $self->{overwrite};
+            }
+
         }
     }
 
