@@ -18,7 +18,6 @@ sub options { (
 sub run {
     my ( $self, $lang ) = @_;
     my $logger = App::I18N->logger();
-
     my $podir = $self->{podir};
     $podir = App::I18N->guess_podir( $self ) unless $podir;
     $self->{mo} = 1 if $self->{locale};
