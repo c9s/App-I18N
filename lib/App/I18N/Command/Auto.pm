@@ -52,6 +52,7 @@ sub run {
     my $logger = $self->logger();
 
 
+    # XXX: check this option
     $self->{backend} ||= 'rest-google';
 
 
@@ -105,6 +106,7 @@ sub run {
 
         next if $msgstr && $self->{skip_existing};
 
+        $i = $msgstr if $msgstr && $self->{msgstr};
 
         $logger->info( "Translating: [ $i ]" ) if $self->{verbose};
         $logger->info( encode_utf8("  Original translation: [ $msgstr ]") ) if $msgstr;
