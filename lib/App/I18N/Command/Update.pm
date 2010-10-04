@@ -10,21 +10,17 @@ use File::Find::Rule;
 use base qw(App::I18N::Command);
 
 sub options { (
-    'mo'       => 'mo',   # generate mo file
     'podir=s'  => 'podir',
-    'g|gettext'  => 'gettext',
+    'mo'       => 'mo',   # generate mo file
+    'locale'   => 'locale',
     ) }
 
 sub run {
     my ( $self, $lang ) = @_;
     my $logger = App::I18N->logger();
-    my $podir;
-    $self->{mo} = $self->{locale} = 1 if $self->{gettext};
-    unless( $podir ) {
-        $podir = 'po' if -e 'po';
-        $podir = 'locale' if -e 'locale' && $self->{locale};
-        $podir ||= 'po';
-    }
+
+    $self->{mo} = 1 if $self->{locale};
+    my $podir = App::I18N->guess_podir( $self ) unless $podir;
 
     my @pofiles = File::Find::Rule->file->name( "*.po" )->in( $podir );
     for my $pofile ( @pofiles ) {

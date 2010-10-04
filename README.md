@@ -99,6 +99,18 @@ eg:
         Updating locale/zh_TW/LC_MESSAGES/project.mo
         9 translated messages, 53 untranslated messages.
 
+
+## Use Case
+
+Auto translate via Google Translate REST API:
+
+Default backend google translate rest, this will translate po/en\_US.po to po/zh\_TW.po.
+when using -g option , this will translate locale/en_US/LC\_MESSAGES/en_US.po to ...
+
+    $ po auto --from en_US --to zh_TW   
+
+    $ po auto --backend google-rest --from en_US --to zh_TW
+
 ## Usage
 
 create dictionary files for language:

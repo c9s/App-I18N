@@ -18,9 +18,8 @@ use base qw(App::I18N::Command);
     --locale    
                 create new po file from pot file in locale directory structure:
                     {podir}/{lang}/LC_MESSAGES/{potname}.po
+                this will enable --mo option
 
-    --gettext
-                this enables --mo and --locale.
 
     -q
     --quiet         
@@ -36,22 +35,15 @@ sub options { (
     'locale'   => 'locale',
     'mo'       => 'mo',   # generate mo file
     'podir=s'  => 'podir',
-    'g|gettext'  => 'gettext',
-    'gettext'  => 'gettext',
     ) }
 
 sub run {
     my ( $self, $lang ) = @_;
+    my $logger = $self->logger();
 
-    my $logger = App::I18N->logger();
-    my $podir;
+    $self->{mo} = 1 if $self->{locale};
+    my $podir = App::I18N->guess_podir( $self ) unless $podir;
 
-    $self->{mo} = $self->{locale} = 1 if $self->{gettext};
-    unless( $podir ) {
-        $podir = 'po' if -e 'po';
-        $podir = 'locale' if -e 'locale' && $self->{locale};
-        $podir ||= 'po';
-    }
     mkpath [ $podir ];
 
     my $pot_name = App::I18N->pot_name;

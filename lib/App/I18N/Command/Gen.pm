@@ -11,7 +11,7 @@ use base qw(App::I18N::Command);
 
 sub options { (
     'podir=s'  => 'podir',
-    'g|gettext'  => 'gettext',
+    'locale'  => 'locale',
     'l|lang=s'   => 'language',
     ) }
 
@@ -63,13 +63,10 @@ For JavaScript: (XXX: or just JSON ?)
 sub run {
     my ( $self, $lang ) = @_;
     my $logger = App::I18N->logger();
-    my $podir;
-    $self->{mo} = $self->{locale} = 1 if $self->{gettext};
-    unless( $podir ) {
-        $podir = 'po' if -e 'po';
-        $podir = 'locale' if -e 'locale' && $self->{locale};
-        $podir ||= 'po';
-    }
+
+    $self->{mo} = 1 if $self->{locale};
+    my $podir = App::I18N->guess_podir( $self ) unless $podir;
+
 
     my @pofiles = File::Find::Rule->file->name( "*.po" )->in( $podir );
     for my $pofile ( @pofiles ) {

@@ -16,7 +16,6 @@ sub options {
     'l|lang=s' => 'language',
     'locale'   => 'locale',   # XXX: use locale directory structure
     'podir=s'  => 'podir',
-    'g|gettext' => 'gettext',  # XXX: should just be locale option and merge the 'mo' option
     'mo'       => 'mo',
     'js'       => 'js',
     );
@@ -26,6 +25,8 @@ our $LMExtract = App::I18N->lm_extract();
 
 
 sub print_help_message {
+    # XXX:
+    return;
     print <<END
 
 In your application include the code below:
@@ -39,16 +40,14 @@ In your application include the code below:
 END
 }
 
+
 sub run {
     my ($self,@args) = @_;
     my $podir = $self->{podir};
 
-    $self->{mo} = $self->{locale} = 1 if $self->{gettext};
-    unless( $podir ) {
-        $podir = 'po' if -e 'po';
-        $podir = 'locale' if -e 'locale' && $self->{locale};
-        $podir ||= 'po';
-    }
+    $self->{mo} = 1 if $self->{locale};
+    $podir = App::I18N->guess_podir( $self ) unless $podir;
+
 
     my @dirs = @args;
     App::I18N->extract_messages( @dirs );

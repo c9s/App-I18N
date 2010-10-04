@@ -22,4 +22,9 @@ sub invoke {
     }
 }
 
+
+sub logger {
+    return App::I18N->logger();
+}
+
 1;

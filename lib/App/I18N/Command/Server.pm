@@ -19,7 +19,6 @@ sub options { (
     'f|file=s'  => 'pofile',
     'dir=s@'    => 'directories',
     'podir=s'   => 'podir',
-    'g|gettext' => 'gettext',
     'mo'        => 'mo',
     'locale'    => 'locale',
 ) }
@@ -29,13 +28,8 @@ sub options { (
 sub run {
     my ($self) = @_;
 
-    my $podir;
-    $self->{mo} = $self->{locale} = 1 if $self->{gettext};
-    unless( $podir ) {
-        $podir = 'po' if -e 'po';
-        $podir = 'locale' if -e 'locale' && $self->{locale};
-        $podir ||= 'po';
-    }
+    $self->{mo} = 1 if $self->{locale};
+    my $podir = App::I18N->guess_podir( $self ) unless $podir;
 
     my @dirs = @{ $self->{directories} || []  };
     my $logger = App::I18N->logger;
