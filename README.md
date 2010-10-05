@@ -146,6 +146,14 @@ extract message from files and start a web server:
 
     $ po server --dir lib --dir share/static --lang en
 
+### For PHP Developers
+
+If you are using gettext extension for your application,
+You should use --locale option to generate locale structure.
+
+And `maketext/l10n.php` file for l10n helper class and functions.
+
+
 ## **TODO**
 
 * Initialize a system-side i18n database:
