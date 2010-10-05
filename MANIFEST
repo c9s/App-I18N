@@ -18,6 +18,7 @@ lib/App/I18N/Command/Gen.pm
 lib/App/I18N/Command/Help.pm
 lib/App/I18N/Command/Lang.pm
 lib/App/I18N/Command/Parse.pm
+lib/App/I18N/Command/Status.pm
 lib/App/I18N/Command/Server.pm
 lib/App/I18N/Command/Update.pm
 lib/App/I18N/Command/Auto.pm
