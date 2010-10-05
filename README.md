@@ -99,8 +99,8 @@ And `locale` directory will enable `--locale` option.
 
 Auto translate via Google Translate REST API:
 
-Default backend google translate rest, this will translate po/en\_US.po to po/zh\_TW.po.
-when using --locale option , this will translate locale/en\_US/LC\_MESSAGES/en\_US.po to ...
+Default backend is google translate REST API, This will translate zh\_TW.po file and translate msgid (en\_US)
+to msgstr (zh\_TW):
 
     $ po auto zh_TW --from en_US
 
