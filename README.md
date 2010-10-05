@@ -95,6 +95,16 @@ Note that if you have `po` or `locale` directory exists, then it will be the def
 
 And `locale` directory will enable `--locale` option.
 
+## Show Translation Status
+
+    $ po status
+
+    Translation Status:
+        en_US: [                                                  ]  0% (0/8) 
+        zh_TW: [======                                            ] 12% (1/8) 
+
+
+
 ## Auto Translation
 
 Auto translate via Google Translate REST API:
