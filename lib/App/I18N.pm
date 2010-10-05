@@ -16,7 +16,6 @@ use App::I18N::Logger;
 use Cwd;
 use Encode;
 use MIME::Types ();
-
 use constant USE_GETTEXT_STYLE => 1;
 
 # our @EXPORT = qw(_);
@@ -103,6 +102,20 @@ sub update_catalog {
     $lme->set_compiled_entries;
     $lme->compile(USE_GETTEXT_STYLE);
     $lme->write_po($translation);
+
+    # patch CHARSET
+    $logger->info( "Set CHARSET to UTF-8" );
+    open my $fh , "<" , $translation;
+    my @lines = <$fh>;
+    close $fh;
+
+    open my $out_fh , ">" , $translation;
+    for my $line ( @lines ) {
+        $line =~ s{charset=CHARSET}{charset=UTF-8};
+        print $out_fh $line;
+    }
+    close $out_fh;
+
 
     if( $cmd->{mo} ) {
         my $mofile = $translation;
