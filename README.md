@@ -108,6 +108,20 @@ when using --locale option , this will translate locale/en\_US/LC\_MESSAGES/en\_
 
     $ po auto --backend google-rest --from en\_US --to zh\_TW
 
+## Generate Static Dictionary File For Code
+
+To generate dictionary hash in perl:
+
+    $ po gen pm
+
+To generate dictionary hash in javascript (json):
+
+    $ po gen json
+
+To general dictionary hash in javascript (with variable name):
+
+    $ po gen js
+
 ## Usage
 
 create dictionary files for language:
