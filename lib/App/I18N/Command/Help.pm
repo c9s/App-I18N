@@ -1,15 +1,10 @@
 package App::I18N::Command::Help;
 use warnings;
 use strict;
-use base 'App::I18N::Command';
+use base 'App::CLI::Command::Help';
 
-sub options { 
-    ( 'verbose' => 'verbose' )
-}
-
-sub run {
-    my ($self,$args) = @_;
-
+sub help_base {
+    "App::I18N::Command";
 }
 
 1;

@@ -10,6 +10,19 @@ use File::Find::Rule;
 use Locale::Maketext::Extract;
 use base qw(App::I18N::Command);
 
+=head1 NAME
+
+Parse
+
+=head1 USAGE
+
+    --lang
+    --locale
+    --podir=[path]
+    --mo
+
+=cut
+
 sub options {
     (
     'q|quiet'  => 'quiet',
@@ -17,12 +30,10 @@ sub options {
     'locale'   => 'locale',   # XXX: use locale directory structure
     'podir=s'  => 'podir',
     'mo'       => 'mo',
-    'js'       => 'js',
     );
 }
 
 our $LMExtract = App::I18N->lm_extract();
-
 
 sub print_help_message {
     # XXX:

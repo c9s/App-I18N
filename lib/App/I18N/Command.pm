@@ -3,6 +3,13 @@ use warnings;
 use strict;
 use base qw(App::CLI App::CLI::Command);
 
+sub options {
+    return (
+        'h|help|?' => 'help',
+        'man' => 'man',
+    );
+}
+
 sub alias {
     (
         "s" => "server",

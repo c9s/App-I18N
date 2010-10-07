@@ -27,6 +27,7 @@ requires 'MIME::Types';
 requires 'App::CLI';
 requires 'Data::Dumper';
 requires 'REST::Google::Translate';
+requires 'Pod::Usage';
 
 install_script 'bin/po';
 
