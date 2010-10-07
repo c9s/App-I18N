@@ -20,7 +20,7 @@ use constant USE_GETTEXT_STYLE => 1;
 
 # our @EXPORT = qw(_);
 
-our $VERSION = 0.010;
+our $VERSION = 0.011;
 our $LOGGER;
 our $LMExtract;
 our $MIME = MIME::Types->new();
