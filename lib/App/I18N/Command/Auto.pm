@@ -31,6 +31,8 @@ Translate zh_CN.po from en_US to zh_TW
 
     po auto zh_CN --from en_US --to zh_TW
 
+    po auto zh_CN --from en_US --overwrite --prompt
+
 =cut
 
 
