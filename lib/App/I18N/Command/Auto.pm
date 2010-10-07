@@ -14,22 +14,22 @@ use base qw(App::I18N::Command);
 
 =head1 DESCRIPTION
 
+auto - auto translate po files.
 
---from 
+=head1 OPTIONS
 
---to
+    --from [lang]
+    --to [lang]
+    --backend [backend]
+    --locale
+    --prompt 
+    --overwrite
+    --msgstr
+    --verbose
 
---backend
+Translate zh_CN.po from en_US to zh_TW
 
---locale
-
--s
-
---overwrite
-
---msgstr
-
---verbose
+    po auto zh_CN --from en_US --to zh_TW
 
 =cut
 
@@ -47,21 +47,6 @@ sub options {
     )
 }
 
-=pod
-
---from 
-
-    from langauge
-
---to   
-
-    translate to langauge
-
-translate zh_CN po file , msgid language en_US , msgstr language zh_CN
-
-    po auto zh_CN --from en_US --to zh_CN
-
-=cut
 
 
 sub prompt {

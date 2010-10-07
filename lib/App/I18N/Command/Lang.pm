@@ -9,23 +9,24 @@ use File::Path qw(mkpath);
 use File::Find::Rule;
 use base qw(App::I18N::Command);
 
-=head1 Lang Command
 
+=head1 NAME
 
-    --mo        
-                generate mo file
+Lang - create new langauge
 
-    --locale    
-                create new po file from pot file in locale directory structure:
+=head1 USAGE
+
+    --mo        generate mo file
+
+    --locale    create new po file from pot file in locale directory structure:
                     {podir}/{lang}/LC_MESSAGES/{potname}.po
                 this will enable --mo option
 
 
     -q
-    --quiet         
-                just be quiet
+    --quiet     just be quiet
 
-    --podir={path}  
+    --podir=[path]
                 po directory. potfile will be generated in {podir}/{appname}.pot
 
 =cut

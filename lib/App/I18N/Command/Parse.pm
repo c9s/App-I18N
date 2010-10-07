@@ -12,9 +12,13 @@ use base qw(App::I18N::Command);
 
 =head1 NAME
 
-Parse
+parse - parse i18n string from files.
 
 =head1 USAGE
+
+parse [options] [path]
+
+=head1 OPTIONS
 
     --lang
     --locale

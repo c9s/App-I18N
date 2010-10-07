@@ -11,7 +11,11 @@ use File::Find::Rule;
 use REST::Google::Translate;
 use base qw(App::I18N::Command);
 
+=head1 NAME
 
+status - show translation status
+
+=cut
 
 sub print_bar {
     my ($self,$value) = @_;
