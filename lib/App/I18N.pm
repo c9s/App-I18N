@@ -18,9 +18,137 @@ use Encode;
 use MIME::Types ();
 use constant USE_GETTEXT_STYLE => 1;
 
+=head1 NAME
+
+App::I18N
+
+=head1 DESCRIPTION
+
+Powerful i18n management utility, provides an command-line interface to parse /
+translate / update mo file i18n messages.
+
+App::I18N borrows some good stuff from L<Jifty::I18N> and L<Jifty::Script::Po>
+and tries to provide a general po management script for all frameworks |
+applications. 
+
+=head1 USAGE
+
+=head2 Basic flow
+
+=head3 Basic po file manipulation:
+
+parse strings from `lib` path:
+
+    $ cd app
+    $ po parse lib
+
+this will generate:
+
+    po/app.pot
+
+please modify the CHARSET in po/app.pot.
+
+    ... modify CHARSET ...
+
+create new language file (po file):
+
+    po lang en
+    po lang fr
+    po lang ja
+    po lang zh_TW
+
+this generates:
+
+    po/en.po
+    po/fr.po
+    po/ja.po
+    po/zh_TW.po
+
+    ... do translation here
+
+when you added more message in your application. you might need to update po
+messages, but you dont have to delete/recreate these po files, you can just parse your messages again
+all of your translations will be kept. eg:
+
+    $ po parse lib
+
+    ... do translation again ...
+
+### Generate locale and mo file for php-gettext or anyother gettext i18n app:
+
+parse strings from `.` path and use --locale (locale directory structure):
+
+    $ cd app
+    $ po parse --locale .
+
+this will generate:
+    
+    po/app.pot
+
+please modify the CHARSET in po/app.pot.
+
+    ... modify CHARSET ...
+
+create new language file (po file and mo file) in locale directory structure:
+
+    $ po lang  --locale en
+    $ po lang  --locale zh_TW
+
+this will generate:
+
+    po/en/LC_MESSAGES/app.po
+    po/en/LC_MESSAGES/app.mo
+    po/zh_TW/LC_MESSAGES/app.po
+    po/zh_TW/LC_MESSAGES/app.mo
+
+(you can use --podir option to generate those stuff to other directory)
+
+    ... do translation here ...
+
+if you use mo file , you might need to update mo file.
+
+    $ po update --locale
+
+eg:
+
+    -project (master) % po update --mo --podir locale
+        Updating locale/zh_TW/LC_MESSAGES/project.po
+        Updating locale/zh_TW/LC_MESSAGES/project.mo
+        9 translated messages, 53 untranslated messages.
+
+Note that if you have `po` or `locale` directory exists, then it will be the default po directory.
+
+And `locale` directory will enable `--locale` option.
+
+## Show Translation Status
+
+    $ po status
+
+    Translation Status:
+        en_US: [                                                  ]  0% (0/8) 
+        zh_TW: [======                                            ] 12% (1/8) 
+
+
+=head2 Auto Translation
+
+Auto translate via Google Translate REST API:
+
+Default backend is google translate REST API, This will translate zh\_TW.po file and translate msgid (en\_US)
+to msgstr (zh\_TW):
+
+    $ po auto zh_TW --from en_US
+
+    $ po auto zh_CN --from en_US --to zh_CN
+
+    $ po auto zh_CN --from en_US --overwrite --prompt
+
+    $ po auto --backend google-rest --from en\_US --to zh\_TW
+
+=cut
+
 # our @EXPORT = qw(_);
 
-our $VERSION = 0.011;
+our $VERSION = 0.012;
 our $LOGGER;
 our $LMExtract;
 our $MIME = MIME::Types->new();

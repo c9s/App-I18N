@@ -6,9 +6,7 @@
 App::I18N borrows some good stuff from Jifty::I18N and tries to provide a general
 po management script for all frameworks | applications. 
 
-
 ## Basic flow
-
 
 ### Basic po file manipulation:
 
