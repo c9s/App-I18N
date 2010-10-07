@@ -48,10 +48,9 @@ sub options {
     )
 }
 
-
-
 sub prompt {
-    print STDERR "Apply This ? (Y/n)";
+    my ($self,$msg) = @_;
+    print STDERR $msg;
     my $ans = <STDIN>;
     chomp($ans);
     $ans ||= "Y";
@@ -62,6 +61,15 @@ sub prompt {
 sub run {
     my ( $self , $lang ) = @_;
     my $logger = $self->logger();
+
+    unless( $lang ) {
+        return $logger->error( "Language name is required." );
+    }
+
+    unless( $self->{from} ) {
+        return $logger->error( "--from [Language] is required. please specify your language to translate." );
+    }
+
 
     # XXX: check this option
     $self->{backend} ||= 'rest-google';
@@ -141,9 +149,17 @@ NEXT_MSGID:
                     }
 
                     if( $self->{prompt} ) {
-                        my $ans = $self->prompt();
-                        next NEXT_MSGID if $ans =~ /n/i;
+                        my $ans = $self->prompt( "Apply this ? (Y/n)" );
+                        next NEXT_MSGID if $ans =~ /^\s*n\s*$/i;
+
+                        if ( $ans !~ /^\s*y\s*$/i ) {
+                            print STDERR qq|Applying "$ans"\n|;
+                            # it's user typed msgstr
+                            $ext->set_msgstr( $i, $ans );
+                            next NEXT_MSGID;
+                        }
                     }
+                    print STDERR qq|Applying "$translated"\n|;
                     $ext->set_msgstr($i, encode_utf8( $translated ) );
                 }
             }
