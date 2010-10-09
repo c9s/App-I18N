@@ -63,7 +63,6 @@ sub run {
     $podir = App::I18N->guess_podir( $self ) unless $podir;
     $self->{mo} = 1 if $self->{locale};
 
-
     my @dirs = @args;
     App::I18N->extract_messages( @dirs );
 
@@ -89,7 +88,6 @@ sub run {
         return;
     }
     App::I18N->update_catalogs( $podir , $self );
-
     print_help_message();
 }
 
