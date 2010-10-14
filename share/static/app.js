@@ -102,6 +102,8 @@ EntryList.UI.EditPanel = {
 					that.update(entry);
 				});
 			});
+
+
 		});
 	},
 	update: function(entry) { 
@@ -141,6 +143,7 @@ EntryList.UI.EditPanel = {
 			}
 		});
 
+		$('#current-msgstr').focus( );
 
 	}
 };
