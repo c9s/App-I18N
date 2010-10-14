@@ -41,6 +41,12 @@ sub set_entry {
     return $ret;
 }
 
+sub last_id {
+    my $self = shift;
+
+
+}
+
 sub insert {
     my ( $self , $lang , $msgid, $msgstr ) = @_;
     $msgstr = decode_utf8( $msgstr );
