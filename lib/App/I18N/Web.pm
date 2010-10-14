@@ -4,8 +4,7 @@ use strict;
 use base qw(Tatsumaki::Application);
 use Any::Moose;
 
-# web po options
-
+# XXX: web po => options 
 has webpo =>
     ( is => 'rw', isa => 'HashRef', default => sub { 
         +{
@@ -13,12 +12,12 @@ has webpo =>
         }
     } );
 
+has podata =>
+    ( is => 'rw' , isa => 'HashRef' , default => sub { +{  } } );
+
+
 has db =>
     ( is => 'rw' );
-
-
-
-
 
 
 1;
