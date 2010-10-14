@@ -156,7 +156,9 @@ extract message from files and start a web server:
 
 ### Server API
 
-/api/lang/list
+/api/podata
+
+/api/options
 
 /api/entry/list[/{lang}]
 

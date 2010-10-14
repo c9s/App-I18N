@@ -84,11 +84,11 @@ sub get_entry_list {
     my ( $self, $lang ) = @_;
     my $sth;
     if( $lang ) {
-        $sth = $self->dbh->prepare(qq| select * from po_string where lang = ? |);
+        $sth = $self->dbh->prepare(qq| select * from po_string where lang = ? order by id desc; |);
         $sth->execute( $lang );
     }
     else {
-        $sth = $self->dbh->prepare(qq| select * from po_string | );
+        $sth = $self->dbh->prepare(qq| select * from po_string order by id desc; | );
         $sth->execute();
     }
     return $self->_entry_sth_to_list( $sth );

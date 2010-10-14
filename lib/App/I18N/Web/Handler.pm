@@ -57,9 +57,6 @@ package App::I18N::Web::Handler::API;
 use Encode;
 use base qw(Tatsumaki::Handler);
 
-sub post {
-
-}
 
 sub db {
     my $self = shift;
@@ -68,7 +65,9 @@ sub db {
 
 =head1 Server API
 
-/api/lang/list
+/api/options
+
+/api/podata
 
 /api/entry/list[/{lang}]
 
@@ -82,14 +81,45 @@ sub db {
 
 =cut
 
+sub post {
+    my ( $self, $path ) = @_;
+    my ( $p1, $p2, @parts ) = split /\//, $path;
+    my $pms = $self->request->parameters->mixed;
+
+    if ( $p1 eq 'entry' && $p2 eq 'set' ) {
+        my ( $id, $msgstr ) = ( $pms->{id}, $pms->{msgstr} );
+
+        return $self->write( { error => 'Require msgstr and id' } ) unless $msgstr and $id;
+
+        $msgstr = decode_utf8($msgstr);
+        $self->application->db->set_entry( $id, $msgstr );
+        return $self->write( { success => 1 } );
+    }
+    elsif( $p1 eq 'entry' && $p2 eq 'insert' ) {
+
+    }
+    elsif( $p1 eq 'translate' && $p2 eq 'google' ) {
+        my $from = $pms->{from};
+        my $to   = $pms->{to};
+
+
+
+
+    }
+    $self->write( { error => 1 } );
+}
+
 sub get {
     my ( $self, $path ) = @_;
     my ( $p1, $p2, @parts ) = split /\//, $path;
     my $params = $self->request->parameters->mixed;
 
-    if ( $p1 eq 'lang' && $p2 eq 'list' ) {
+    if ( $p1 eq 'podata' ) {
         my $langdata = $self->application->podata;
         return $self->write($langdata);
+    }
+    elsif ( $p1 eq 'options' ) {
+        return $self->write( $self->application->options );
     }
     elsif ( $p1 eq 'entry' && $p2 eq 'insert' ) {
         my ( $lang, $msgid, $msgstr ) = @parts;
@@ -97,8 +127,10 @@ sub get {
         return $self->write( { error => 'Require language, msgid or msgstr' } ) unless $msgid and $msgstr and $lang;
 
         $msgstr = decode_utf8($msgstr);
+
         my $existed = $self->db->find( $lang, $msgid );
         return $self->write( { error => 'MsgID Exists', record => $existed } ) if $existed;
+
         $self->application->db->insert( $lang, $msgid, $msgstr );
         return $self->write( { success => 1, recordid => $self->application->db->dbh->last_insert_id( undef, undef, 'po_string', 'msgid' ) } );
     }
@@ -127,10 +159,9 @@ sub get {
         my $id     = shift @parts;
         my $msgstr = shift @parts;
 
+        return $self->write( { error => 'Require msgstr and id' } ) unless $msgstr and $id;
+
         $msgstr = decode_utf8($msgstr);
-
-        return $self->write( { error => 'Require msgstr' } ) unless $msgstr;
-
         $self->application->db->set_entry( $id, $msgstr );
         return $self->write( { success => 1 } );
     }

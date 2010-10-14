@@ -90,13 +90,13 @@ sub run {
 
     for my $file ( @pofiles ) {
         my ($langname)  = ( $file     =~ m{([a-zA-Z-_]+)\.po$} );
-        my ($shortname) = ( $langname =~ m{^([a-zA-Z]+)} );
+        my ($code) = ( $langname =~ m{^([a-zA-Z]+)} );
         $logger->info( "Importing $langname: $file" );
         $db->import_po( $langname , $file );
 
         $podata{ $langname } = {
-            shortcode => $shortname,
-            name => code2language( $shortname ),
+            code => $code,
+            name => code2language( $code ),
             path => $file,
         };
     }
@@ -134,7 +134,7 @@ sub run {
     $app->options({
         podir     => $podir,
         shareroot => $shareroot,
-        map { $_ => $self->{$_} } qw(language pofile locale),
+        map { $_ => $self->{$_} } grep { $self->{$_} } qw(language pofile locale),
     });
     $app->podata( \%podata );
     $app->db( $db );
