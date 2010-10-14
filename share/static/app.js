@@ -36,7 +36,7 @@ var EntryList = {
 	list: [  ],
 	i: null,
 	next: function() {
-		if( this.i < this.list.length ) 
+		if( this.i + 1 < this.list.length ) 
 			return this.list[++this.i];
 	},
 	prev: function() {
@@ -57,17 +57,20 @@ var EntryList = {
 	},
 	save: function(cb) {
 		var that = this;
+        var record = this.current().id;
+        var msgstr = this.current().msgstr;
+
 		$.ajax({
 			url: '/api/entry/set',
 			type: 'post',
 			data: { 
-				id: that.current().id,
-				msgstr: that.current().msgstr
+				id: record,
+				msgstr: msgstr
 			},
 			dataType: 'json',
 			success: function(resp) {
 				if(resp) {
-					$.jGrowl( "Entry Saved" );
+					$.jGrowl( "Entry Saved: " + msgstr );
 					cb( resp );
 				}
 			}

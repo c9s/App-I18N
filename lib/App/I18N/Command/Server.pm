@@ -104,8 +104,11 @@ sub run {
 
     $SIG{INT} = sub {
         # XXX: write sqlite data to po file here.
-        $logger->info("Exporting messages from sqlite memory database.");
-        # $db->export_po(  );
+        $logger->info("Exporting messages from sqlite memory database...");
+        for my $langname ( keys %podata ) {
+            my $opt = $podata{ $langname };
+            $db->export_po( $langname , $opt->{path} );
+        }
         exit;
     };
 

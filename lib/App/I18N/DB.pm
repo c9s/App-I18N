@@ -110,8 +110,6 @@ sub _entry_sth_to_list {
 }
 
 
-
-
 sub get_langlist {
     my $self = shift;
     my $sth = $self->dbh->prepare("select distinct lang from po_string;");
@@ -141,13 +139,6 @@ sub import_po {
     $self->import_lexicon( $lang , $lme->lexicon );
 }
 
-# sub get_entrylist {
-#     my ( $self, $lang ) = @_;
-# 
-# 
-# }
-
-
 sub export_lexicon {
     my ($self) = @_;
     my $lexicon;
@@ -157,9 +148,14 @@ sub export_lexicon {
 }
 
 sub export_po {
-    my ( $self, $podir ) = @_;
-
-    # $lme->write_po($pofile);
+    my ( $self , $lang , $pofile ) = @_;
+    my $list = $self->get_entry_list( $lang );
+    my $lexicon =  {
+        map { $_->{msgid} => encode_utf8 $_->{msgstr}; } @$list
+    };
+    my $lme = App::I18N->lm_extract;
+    $lme->set_lexicon( $lexicon );
+    $lme->write_po($pofile);
 }
 
 =pod
