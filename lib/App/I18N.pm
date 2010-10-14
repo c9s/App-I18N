@@ -15,6 +15,7 @@ use Locale::Maketext::Extract;
 use App::I18N::Logger;
 use Cwd;
 use Encode;
+use File::Spec;
 use MIME::Types ();
 use constant USE_GETTEXT_STYLE => 1;
 
@@ -261,6 +262,18 @@ sub guess_podir {
     return $podir;
 }
 
+sub get_po_path {
+    my ( $self, $podir, $lang, $is_locale ) = @_;
+    my $pot_name = App::I18N->pot_name;
+    my $path;
+    if ($is_locale) {
+        $path = File::Spec->join( $podir, $lang . ".po" );
+    }
+    else {
+        $path = File::Spec->join( $podir, 'locale', $lang, 'LC_MESSAGES', $pot_name . ".po" );
+    }
+    return $path;
+}
 
 sub update_catalogs {
     my ($self,$podir , $cmd ) = @_;
@@ -280,6 +293,5 @@ sub update_catalogs {
         $self->update_catalog( $catalog , $cmd );
     }
 }
-
 
 1;

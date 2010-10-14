@@ -1,3 +1,8 @@
+
+
+
+
+
 package App::I18N::Web::Handler;
 use warnings;
 use strict;
@@ -45,5 +50,20 @@ sub get {
     $self->write( Template::Declare->show( $path, $self ) );
     $self->finish;
 }
+
+package App::I18N::Web::Handler::GetPo;
+use warnings;
+use strict;
+use base qw(Tatsumaki::Handler);
+use Tatsumaki;
+sub get {
+    my ( $self, $lang, $locale ) = @_;
+
+}
+
+
+
+
+
 
 1;

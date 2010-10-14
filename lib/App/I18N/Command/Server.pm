@@ -10,6 +10,7 @@ use Plack::Runner;
 use File::Basename;
 use File::ShareDir qw();
 use File::Path qw(mkpath);
+use Locale::Language;
 
 
 use constant debug => 1;
@@ -20,6 +21,7 @@ sub options { (
     'dir=s@'    => 'directories',
     'podir=s'   => 'podir',
     'mo'        => 'mo',
+    'verbose'   => 'verbose',
     'locale'    => 'locale',
 ) }
 
@@ -62,17 +64,45 @@ sub run {
     if( $@ ) {
         warn $@;
     }
-    # $db = App::I18N::DB->new( lang => 'zh-tw' );
+
     $db = App::I18N::DB->new();
+
+    # $lang = code2language('en');        # $lang gets 'English'
+
 
     $logger->info("Importing messages to sqlite memory database.");
     my @pofiles = ( $self->{pofile} ) || File::Find::Rule->file()->name("*.po")->in( $podir );
 
+
+    my %podata = ();
+
+=head3 %podata
+
+    { 
+        [lang_code] => { 
+            name => 'Language Name',
+            path => 'po file path',
+        },
+        ...
+    }
+
+=cut
+
     for my $file ( @pofiles ) {
-        my ($langname) = ( $file =~ m{([a-zA-Z-_]+)\.po$} );
+        my ($langname)  = ( $file     =~ m{([a-zA-Z-_]+)\.po$} );
+        my ($shortname) = ( $langname =~ m{^([a-zA-Z]+)} );
         $logger->info( "Importing $langname: $file" );
         $db->import_po( $langname , $file );
+
+        $podata{ $langname } = {
+            shortcode => $shortname,
+            name => code2language( $shortname ),
+            path => $file,
+        };
     }
+
+
+    use Data::Dumper; warn Dumper( \%podata );
 
     $SIG{INT} = sub {
         # XXX: write sqlite data to po file here.
@@ -102,15 +132,19 @@ sub run {
     $logger->info("pofile: @{[ $self->{pofile} ]}") if $self->{pofile};
     $logger->info("language: @{[ $self->{language} ]}") if $self->{language};
 
+
     $app->webpo({
         podir     => $podir,
-        language  => $self->{language},
-        pofile    => $self->{pofile},
         shareroot => $shareroot,
+        map { $_ => $self->{$_} } qw(language pofile locale),
     });
+    $app->db( $db );
 
     $app->template_path( $shareroot . "/templates" );
     $app->static_path( $shareroot . "/static" );
+
+
+
 
     my $runner = Plack::Runner->new;
     $runner->parse_options(@ARGV);

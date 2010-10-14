@@ -55,9 +55,8 @@ In your application include the code below:
 END
 }
 
-
 sub run {
-    my ($self,@args) = @_;
+    my ( $self, @args ) = @_;
 
     my $podir = $self->{podir};
     $podir = App::I18N->guess_podir( $self ) unless $podir;
@@ -77,13 +76,13 @@ sub run {
         #    locale/{lang}/LC_MESSAGES/{domain}.po
         #    {podir}/{lang}/LC_MESSAGES/{pot_name}.po
         if( $self->{locale} ) {
-            mkpath [ File::Spec->join(  $podir , $self->{language}  , "LC_MESSAGES" )  ];
+            mkpath [ File::Spec->join( $podir, $self->{language}, "LC_MESSAGES" ) ];
 
-            my $pofile =  File::Spec->catfile( $podir, $self->{'language'} , "LC_MESSAGES" , $pot_name . ".po");
-            App::I18N->update_catalog( $pofile , $self );
+            my $pofile = File::Spec->catfile( $podir, $self->{language}, "LC_MESSAGES", $pot_name . ".po" );
+            App::I18N->update_catalog( $pofile, $self );
         }
         else {
-            App::I18N->update_catalog( File::Spec->catfile( $podir, $self->{'language'} . ".po") , $self );
+            App::I18N->update_catalog( File::Spec->catfile( $podir, $self->{language} . ".po" ), $self );
         }
         return;
     }

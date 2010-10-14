@@ -21,6 +21,27 @@ sub BUILD {
     $self->dbh( $dbh );
 }
 
+# by {id}
+sub get_entry {
+    my ( $self, $id ) = @_;
+    my $sth = $self->dbh->prepare(qq{ select * from po_string where id = ? });
+    $sth->execute($id);
+    my $data = $sth->fetchrow_hash();
+    $sth->finish;
+    return $data;
+}
+
+sub set_entry {
+    my ($self,$id,$msgstr) = @_;
+    die unless $id && $msgstr;
+    my $sth = $self->dbh->prepare(qq{ update po_string set msgstr = ? where id = ? });
+    my $ret = $sth->execute( $msgstr, $id );
+    $sth->finish;
+    return $ret;
+}
+
+
+
 sub insert {
     my ( $self , $lang , $msgid, $msgstr ) = @_;
     my $sth = $self->dbh->prepare(
@@ -57,6 +78,15 @@ sub fetch_lang_table {
     return \@result;
 }
 
+sub get_langlist {
+    my $self = shift;
+    my $sth = $self->dbh->prepare("select distinct lang from po_string;");
+    $sth->execute();
+    my $hashref = $sth->fetchall_hashref('lang');
+    $sth->finish;
+    return keys %$hashref;
+}
+
 sub write_to_pofile {
     # XXX:
 
@@ -65,7 +95,7 @@ sub write_to_pofile {
 sub import_lexicon {
     my ( $self , $lang , $lex ) = @_;
     while ( my ( $msgid, $msgstr ) = each %$lex ) {
-        $self->insert( $msgid, $msgstr, $lang );
+        $self->insert( $lang , $msgid , $msgstr );
     }
 }
 
@@ -76,6 +106,13 @@ sub import_po {
     $lme->read_po($pofile) if -f $pofile && $pofile !~ m/pot$/;
     $self->import_lexicon( $lang , $lme->lexicon );
 }
+
+# sub get_entrylist {
+#     my ( $self, $lang ) = @_;
+# 
+# 
+# }
+
 
 sub export_lexicon {
     my ($self) = @_;
