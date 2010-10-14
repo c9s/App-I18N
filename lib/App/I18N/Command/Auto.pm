@@ -105,8 +105,8 @@ sub run {
 
     my $from_lang_s = $from_lang;
     my $to_lang_s = $to_lang;
-    ($from_lang_s) = ( $from_lang  =~ m{^([a-z]+)(_\w+)} );
-    ($to_lang_s)   = ( $to_lang    =~ m{^([a-z]+)(_\w+)} );
+    ($from_lang_s) = ( $from_lang  =~ m{^([a-z]+)(_\w+)?} );
+    ($to_lang_s)   = ( $to_lang    =~ m{^([a-z]+)(_\w+)?} );
 
     REST::Google::Translate->http_referer('http://google.com');
 
