@@ -3,6 +3,7 @@ use warnings;
 use strict;
 use DBI;
 use Any::Moose;
+use Encode;
 
 has dbh => 
     ( is => 'rw' );
@@ -26,7 +27,7 @@ sub get_entry {
     my ( $self, $id ) = @_;
     my $sth = $self->dbh->prepare(qq{ select * from po_string where id = ? });
     $sth->execute($id);
-    my $data = $sth->fetchrow_hash();
+    my $data = $sth->fetchrow_hashref();
     $sth->finish;
     return $data;
 }
@@ -40,10 +41,9 @@ sub set_entry {
     return $ret;
 }
 
-
-
 sub insert {
     my ( $self , $lang , $msgid, $msgstr ) = @_;
+    $msgstr = decode_utf8( $msgstr );
     my $sth = $self->dbh->prepare(
         qq| INSERT INTO po_string (  lang , msgid , msgstr ) VALUES ( ? , ? , ? ); |);
     $sth->execute( $lang, $msgid, $msgstr );
@@ -53,27 +53,34 @@ sub find {
     my ( $self, $lang , $msgid ) = @_;
     my $sth = $self->dbh->prepare(qq| SELECT * FROM po_string WHERE lang = ? AND msgid = ? LIMIT 1;|);
     $sth->execute( $lang, $msgid );
-    my @data = $sth->fetchrow_array();
-    return MsgEntry->new( 
-        id => $data[0],
-        lang  => $data[1],
-        msgid => $data[2],
-        msgstr => $data[3],
-    );
+    my $data = $sth->fetchrow_hashref();
+    $sth->finish;
+
+
+    return $data;
 }
 
-sub fetch_lang_table {
+sub get_entry_list {
     my ( $self, $lang ) = @_;
-    my $sth  =$self->dbh->prepare( qq| select * from po_string where lang = ? | );
-    $sth->execute( $lang );
+
+    my $sth;
+    if( $lang ) {
+        $sth = $self->dbh->prepare(qq| select * from po_string where lang = ? |);
+        $sth->execute( $lang );
+    }
+    else {
+        $sth = $self->dbh->prepare(qq| select * from po_string | );
+        $sth->execute();
+    }
+
     my @result;
     while( my $row = $sth->fetchrow_hashref ) {
-        push @result, MsgEntry->new(
+        push @result, {
             id     => $row->{id},
             lang   => $row->{lang},
             msgid  => $row->{msgid},
             msgstr => $row->{msgstr},
-        );
+        };
     }
     return \@result;
 }
@@ -128,13 +135,35 @@ sub export_po {
     # $lme->write_po($pofile);
 }
 
-
+=pod
 package MsgEntry;
 use Any::Moose;
+use JSON::XS;
+use overload 
+    '""' => \&to_string,
+    '%{}' => \&to_hash;
+
 
 has id => ( is => 'rw', isa => 'Int' );
 has lang  => ( is => 'rw' , isa => 'Str' );
 has msgid => ( is => 'rw' , isa => 'Str' );
 has msgstr => ( is => 'rw' , isa => 'Str' );
+
+sub to_hash {
+    my $self = shift;
+    return (
+        id       => $self->id,
+        lang     => $self->lang,
+        msgid    => $self->msgid,
+        msgstr   => $self->msgstr,
+    );
+}
+
+sub to_string {
+    my $self = shift;
+    return encode_json( { $self->to_hash } );
+}
+=cut
+
 
 1;

@@ -22,6 +22,6 @@ ok( $entry->msgstr );
 
 is( $entry->msgstr , '測試' );
 
-my $entries = $db->fetch_lang_table( 'zh-tw' );
+my $entries = $db->get_entry_list( 'zh-tw' );
 ok( @$entries );
 is( scalar(@$entries) , 1 );

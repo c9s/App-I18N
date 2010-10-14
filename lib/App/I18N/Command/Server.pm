@@ -116,9 +116,10 @@ sub run {
 
     Template::Declare->init( dispatch_to => ['App::I18N::Web::View'] );
 
-    my $app = App::I18N::Web->new([
-        "(/.*)" => "App::I18N::Web::Handler"
-    ]);
+    my $app = App::I18N::Web->new( [
+            "/api/(.*)" => "App::I18N::Web::Handler::API",
+            "(/.*)"     => "App::I18N::Web::Handler",
+    ] );
 
     my $shareroot = 
         ( -e "./share" ) 
@@ -135,12 +136,7 @@ sub run {
         shareroot => $shareroot,
         map { $_ => $self->{$_} } qw(language pofile locale),
     });
-
-#     $app->webpo({
-#         podir     => $podir,
-#         shareroot => $shareroot,
-#         map { $_ => $self->{$_} } qw(language pofile locale),
-#     });
+    $app->podata( \%podata );
     $app->db( $db );
 
     $app->template_path( $shareroot . "/templates" );

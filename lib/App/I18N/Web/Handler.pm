@@ -51,19 +51,43 @@ sub get {
     $self->finish;
 }
 
-package App::I18N::Web::Handler::GetPo;
-use warnings;
-use strict;
+
+
+package App::I18N::Web::Handler::API;
 use base qw(Tatsumaki::Handler);
-use Tatsumaki;
-sub get {
-    my ( $self, $lang, $locale ) = @_;
+
+sub post {
 
 }
 
+sub get {
+    my ( $self, $path ) = @_;
+    my ( $p1, $p2, @parts ) = split /\//, $path;
+    my $params = $self->request->parameters->mixed;
 
+    if( $p1 eq 'lang' && $p2 eq 'list' ) {
+        my $langdata = $self->application->podata;
+        $self->write( $langdata );
+    }
+    elsif( $p1 eq 'entry' && $p2 eq 'list' ) {
+        my $lang = shift @parts;
+        my $entrylist = $self->application->db->get_entry_list( $lang );
+        $self->write( { 
+            entrylist => $entrylist } );
+    }
+    elsif( $p1 eq 'entry' && $p2 eq 'get' ) {
+        my $id = shift @parts;
+        my $entry = $self->application->db->get_entry( $id );
+        $self->write( $entry );
+    } 
+    elsif( $p1 eq 'entry' && $p2 eq 'set' ) {
+        my $id = shift @parts;
+        my $msgstr = shift @parts;
+        $self->application->db->set_entry(  $id , $msgstr );
+        $self->write({ success => 1 });
+    }
 
-
-
+    # warn "!!!!!!!!!!!!!!!!!!!!!!";
+}
 
 1;

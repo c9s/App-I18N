@@ -71,7 +71,6 @@ template 'edit_po' => sub {
         $logger->info( "$translation doesnt exist." );
     }
 
-
     my $LME = App::I18N->lm_extract();
     $LME->read_po( $translation ) if -f $translation;
 
