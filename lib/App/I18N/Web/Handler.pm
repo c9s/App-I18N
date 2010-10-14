@@ -72,6 +72,8 @@ sub db {
 
 /api/entry/list[/{lang}]
 
+/api/entry/unsetlist[/{lang}]
+
 /api/entry/get/{id}
 
 /api/entry/set/{id}/{msgstr}
@@ -85,48 +87,55 @@ sub get {
     my ( $p1, $p2, @parts ) = split /\//, $path;
     my $params = $self->request->parameters->mixed;
 
-    if( $p1 eq 'lang' && $p2 eq 'list' ) {
+    if ( $p1 eq 'lang' && $p2 eq 'list' ) {
         my $langdata = $self->application->podata;
-        return $self->write( $langdata );
+        return $self->write($langdata);
     }
-    elsif( $p1 eq 'entry' && $p2 eq 'insert' ) {
+    elsif ( $p1 eq 'entry' && $p2 eq 'insert' ) {
         my ( $lang, $msgid, $msgstr ) = @parts;
 
         return $self->write( { error => 'Require language, msgid or msgstr' } ) unless $msgid and $msgstr and $lang;
 
-        $msgstr = decode_utf8( $msgstr );
-        my $existed = $self->db->find( $lang , $msgid );
-        return $self->write({ error => 'MsgID Exists' , record => $existed }) if $existed;
-        $self->application->db->insert(  $lang , $msgid , $msgstr );
-        return $self->write( { success => 1 , recordid => $self->application->db->dbh->last_insert_id( undef , undef , 'po_string' , 'msgid' ) } );
+        $msgstr = decode_utf8($msgstr);
+        my $existed = $self->db->find( $lang, $msgid );
+        return $self->write( { error => 'MsgID Exists', record => $existed } ) if $existed;
+        $self->application->db->insert( $lang, $msgid, $msgstr );
+        return $self->write( { success => 1, recordid => $self->application->db->dbh->last_insert_id( undef, undef, 'po_string', 'msgid' ) } );
     }
-    elsif( $p1 eq 'entry' && $p2 eq 'list' ) {
-        my $lang = shift @parts;
-        my $entrylist = $self->application->db->get_entry_list( $lang );
-        return $self->write( { 
-            entrylist => $entrylist } );
+    elsif ( $p1 eq 'entry' && $p2 eq 'unsetlist' ) {
+        my $lang      = shift @parts;
+        my $entrylist;
+        $entrylist = $self->application->db->get_unset_entry_list($lang);
+        return $self->write( { entrylist => $entrylist } );
     }
-    elsif( $p1 eq 'entry' && $p2 eq 'get' ) {
+    elsif ( $p1 eq 'entry' && $p2 eq 'list' ) {
+        my $lang      = shift @parts;
+        my $entrylist;
+        $entrylist = $self->application->db->get_entry_list($lang);
+        return $self->write( {
+                entrylist => $entrylist } );
+    }
+    elsif ( $p1 eq 'entry' && $p2 eq 'get' ) {
         my $id = shift @parts;
 
         return $self->write( { error => 'Require ID' } ) unless $id;
 
-        my $entry = $self->application->db->get_entry( $id );
-        return $self->write( $entry );
-    } 
-    elsif( $p1 eq 'entry' && $p2 eq 'set' ) {
-        my $id = shift @parts;
+        my $entry = $self->application->db->get_entry($id);
+        return $self->write($entry);
+    }
+    elsif ( $p1 eq 'entry' && $p2 eq 'set' ) {
+        my $id     = shift @parts;
         my $msgstr = shift @parts;
 
-        $msgstr = decode_utf8( $msgstr );
+        $msgstr = decode_utf8($msgstr);
 
         return $self->write( { error => 'Require msgstr' } ) unless $msgstr;
 
-        $self->application->db->set_entry(  $id , $msgstr );
-        return $self->write({ success => 1 });
+        $self->application->db->set_entry( $id, $msgstr );
+        return $self->write( { success => 1 } );
     }
 
-    $self->write({ error => 'Method Error' });
+    $self->write( { error => 'Method Error' } );
 }
 
 1;

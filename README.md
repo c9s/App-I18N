@@ -102,7 +102,6 @@ And `locale` directory will enable `--locale` option.
         zh_TW: [======                                            ] 12% (1/8) 
 
 
-
 ## Auto Translation
 
 Auto translate via Google Translate REST API:
@@ -160,6 +159,8 @@ extract message from files and start a web server:
 /api/lang/list
 
 /api/entry/list[/{lang}]
+
+/api/entry/unsetlist[/{lang}]
 
 /api/entry/get/{id}
 

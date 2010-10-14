@@ -66,9 +66,22 @@ sub find {
     return $data;
 }
 
+sub get_unset_entry_list {
+    my ($self, $lang ) = @_;
+    my $sth;
+    if( $lang ) {
+        $sth = $self->dbh->prepare(qq| SELECT * FROM po_string where lang = ? and msgstr = '' or msgstr is null; |);
+        $sth->execute( $lang );
+    }
+    else {
+        $sth = $self->dbh->prepare(qq| SELECT * FROM po_string where msgstr = '' or msgstr is null; | );
+        $sth->execute();
+    }
+    return $self->_entry_sth_to_list( $sth );
+}
+
 sub get_entry_list {
     my ( $self, $lang ) = @_;
-
     my $sth;
     if( $lang ) {
         $sth = $self->dbh->prepare(qq| select * from po_string where lang = ? |);
@@ -78,7 +91,12 @@ sub get_entry_list {
         $sth = $self->dbh->prepare(qq| select * from po_string | );
         $sth->execute();
     }
+    return $self->_entry_sth_to_list( $sth );
+}
 
+
+sub _entry_sth_to_list {
+    my ($self , $sth) = @_;
     my @result;
     while( my $row = $sth->fetchrow_hashref ) {
         push @result, {
@@ -90,6 +108,9 @@ sub get_entry_list {
     }
     return \@result;
 }
+
+
+
 
 sub get_langlist {
     my $self = shift;
