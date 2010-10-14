@@ -42,12 +42,13 @@ sub options { (
 sub copy_potfile {
     my ( $self, $potfile, $pofile ) = @_;
     use File::Copy;
-    $logger->info(  "$pofile created.");
+
+    $self->logger->info(  "$pofile created.");
     copy( $potfile , $pofile );
     if( $self->{mo} ) {
         my $mofile = $pofile;
         $mofile =~ s{\.po$}{.mo};
-        $logger->info( "Generating MO file: $mofile" );
+        $self->logger->info( "Generating MO file: $mofile" );
         system(qq{msgfmt -v $pofile -o $mofile});
     }
 }
