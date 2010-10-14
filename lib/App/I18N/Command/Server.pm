@@ -102,8 +102,6 @@ sub run {
     }
 
 
-    use Data::Dumper; warn Dumper( \%podata );
-
     $SIG{INT} = sub {
         # XXX: write sqlite data to po file here.
         $logger->info("Exporting messages from sqlite memory database.");
@@ -132,12 +130,17 @@ sub run {
     $logger->info("pofile: @{[ $self->{pofile} ]}") if $self->{pofile};
     $logger->info("language: @{[ $self->{language} ]}") if $self->{language};
 
-
-    $app->webpo({
+    $app->options({
         podir     => $podir,
         shareroot => $shareroot,
         map { $_ => $self->{$_} } qw(language pofile locale),
     });
+
+#     $app->webpo({
+#         podir     => $podir,
+#         shareroot => $shareroot,
+#         map { $_ => $self->{$_} } qw(language pofile locale),
+#     });
     $app->db( $db );
 
     $app->template_path( $shareroot . "/templates" );

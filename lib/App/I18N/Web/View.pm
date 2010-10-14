@@ -59,7 +59,7 @@ template 'head' => sub {
 
 template 'edit_po' => sub {
     my ( $self, $handler, $translation ) = @_;
-    my $po_opts = $handler->application->webpo;
+    my $po_opts = $handler->application->options;
     my $podir   = $po_opts->{podir};
     unless( $translation ) {
         $translation = File::Spec->catfile( $podir , $handler->request->param( 'lang' ) . ".po" );

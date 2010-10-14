@@ -5,7 +5,7 @@ use base qw(Tatsumaki::Application);
 use Any::Moose;
 
 # XXX: web po => options 
-has webpo =>
+has options =>
     ( is => 'rw', isa => 'HashRef', default => sub { 
         +{
         
