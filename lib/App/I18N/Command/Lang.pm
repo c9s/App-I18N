@@ -81,8 +81,10 @@ sub run {
         }
     }
     else {
-        $pofile = File::Spec->join( $podir , $lang . ".po" );
-        $self->copy_potfile( $potfile , $pofile );
+        for my $lang ( @langs ) {
+            $pofile = File::Spec->join( $podir , $lang . ".po" );
+            $self->copy_potfile( $potfile , $pofile );
+        }
     }
     $logger->info( "Done" );
 }
