@@ -154,6 +154,19 @@ extract message from files and start a web server:
 
     $ po server --dir lib --dir share/static --lang en
 
+
+### Server API
+
+/api/lang/list
+
+/api/entry/list[/{lang}]
+
+/api/entry/get/{id}
+
+/api/entry/set/{id}/{msgstr}
+
+/api/entry/insert/{lang}/{msgid}/{msgstr}
+
 ### For PHP Developers
 
 If you are using gettext extension for your application,

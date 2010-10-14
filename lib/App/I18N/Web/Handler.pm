@@ -66,6 +66,20 @@ sub db {
     return $self->application->db;
 }
 
+=head1 Server API
+
+/api/lang/list
+
+/api/entry/list[/{lang}]
+
+/api/entry/get/{id}
+
+/api/entry/set/{id}/{msgstr}
+
+/api/entry/insert/{lang}/{msgid}/{msgstr}
+
+=cut
+
 sub get {
     my ( $self, $path ) = @_;
     my ( $p1, $p2, @parts ) = split /\//, $path;
@@ -103,6 +117,8 @@ sub get {
     elsif( $p1 eq 'entry' && $p2 eq 'set' ) {
         my $id = shift @parts;
         my $msgstr = shift @parts;
+
+        $msgstr = decode_utf8( $msgstr );
 
         return $self->write( { error => 'Require msgstr' } ) unless $msgstr;
 
