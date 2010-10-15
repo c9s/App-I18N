@@ -12,6 +12,9 @@ has options =>
         }
     } );
 
+has skip_session => 
+    ( is => 'rw' , isa => 'bool' ,    default => sub { 0 } );
+
 has podata =>
     ( is => 'rw' , isa => 'HashRef' , default => sub { +{  } } );
 

@@ -132,19 +132,21 @@ EntryList.UI.EditPanel = {
 			g_el_text = g_el.find('div.text');
 		}
 
-		google.language.translate( entry.msgid  , "", lang , function(result) {
-			if( result.error ) {
-				g_el_text.html( "Error:" + result.error.message );
-				$.jGrowl( result.error.message , { header: 'Google Translation' , theme: 'error' , sticky: 1 } );
-			} else {
-				g_el_text.html( result.translation );
-				var apply = $('<a/>').attr( { href: '#', tabindex: 5 } ).html( 'Apply' ).addClass('apply').click( function(e) {
-					$('#current-msgstr').val( result.translation );
-					g_el.fadeOut('slow');
-				});
-				g_el_text.append( apply );
-			}
-		});
+        if( typeof google != "undefined" ) {
+            google.language.translate( entry.msgid  , "", lang , function(result) {
+                if( result.error ) {
+                    g_el_text.html( "Error:" + result.error.message );
+                    $.jGrowl( result.error.message , { header: 'Google Translation' , theme: 'error' , sticky: 1 } );
+                } else {
+                    g_el_text.html( result.translation );
+                    var apply = $('<a/>').attr( { href: '#', tabindex: 5 } ).html( 'Apply' ).addClass('apply').click( function(e) {
+                        $('#current-msgstr').val( result.translation );
+                        g_el.fadeOut('slow');
+                    });
+                    g_el_text.append( apply );
+                }
+            });
+        }
 
 		$('#current-msgstr').focus( );
 

@@ -69,8 +69,10 @@ template 'head' => sub {
 	outs_raw qq|
 		<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 		<script type="text/javascript">
-			google.load("language", "1");
-		</script>
+            if( typeof google != "undefined" ) {
+                google.load("language", "1");
+            } 
+        </script>
 	|;
 
 

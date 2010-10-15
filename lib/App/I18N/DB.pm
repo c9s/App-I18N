@@ -43,12 +43,15 @@ sub close {
 
 sub init_schema {
     my ($self) = shift;
-    my $rv = $self->dbh->do( qq|create table po_string (  
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            lang TEXT,
-            msgid TEXT,
-            msgstr TEXT
-        );|);
+    $self->dbh->do( qq|
+        create table po_string (  
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            lang        TEXT,
+            msgid       TEXT,
+            msgstr      TEXT,
+            updated_on  timestamp,
+            updated_by  varchar(120));
+    |);
 }
 
 # by {id}
