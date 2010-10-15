@@ -118,6 +118,10 @@ sub get {
         my $langdata = $self->application->podata;
         return $self->write($langdata);
     }
+    elsif ( $p1 eq 'skip_session' ) {
+        $self->application->skip_session( 1 );
+        return $self->write({ success => 1 });
+    }
     elsif ( $p1 eq 'options' ) {
         return $self->write( $self->application->options );
     }

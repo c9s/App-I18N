@@ -29,7 +29,6 @@ requires 'Data::Dumper';
 requires 'REST::Google::Translate';
 requires 'Locale::Language';
 
-
 install_script 'bin/po';
 
 # author_tests('xt');
