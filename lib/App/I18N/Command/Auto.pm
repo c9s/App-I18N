@@ -48,14 +48,6 @@ sub options {
     )
 }
 
-sub prompt {
-    my ($self,$msg) = @_;
-    print STDERR $msg;
-    my $ans = <STDIN>;
-    chomp($ans);
-    $ans ||= "Y";
-    return $ans;
-}
 
 
 sub run {

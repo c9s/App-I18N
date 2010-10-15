@@ -10,16 +10,23 @@ has dbh =>
 
 sub BUILD {
     my ($self,$args) = @_;
-    # my $dbh = DBI->connect("dbi:SQLite:dbname=$dbfile","","");
-    my $dbh = DBI->connect("dbi:SQLite:dbname=:memory:","","",
-            { RaiseError     => 1, sqlite_unicode => 1, });
-    my $rv = $dbh->do( qq|create table po_string (  
+    if( ! $args->{dbh} ) {
+        print "Importing database schema\n";
+        my $dbh = DBI->connect("dbi:SQLite:dbname=:memory:","","",
+                { RaiseError     => 1, sqlite_unicode => 1, });
+        $self->dbh( $dbh );
+        $self->init_schema();
+    }
+}
+
+sub init_schema {
+    my ($self) = shift;
+    my $rv = $self->dbh->do( qq|create table po_string (  
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             lang TEXT,
             msgid TEXT,
             msgstr TEXT
         );|);
-    $self->dbh( $dbh );
 }
 
 # by {id}

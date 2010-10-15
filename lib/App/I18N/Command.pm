@@ -29,6 +29,17 @@ sub invoke {
     }
 }
 
+sub prompt {
+    my ( $self, $msg, $default ) = @_;
+    $default ||= "Y";
+
+    print STDERR $msg;
+    my $ans = <STDIN>;
+    chomp($ans);
+    $ans ||= $default;
+    return $ans;
+}
+
 
 sub logger {
     return App::I18N->logger();
