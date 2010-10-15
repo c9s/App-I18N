@@ -294,4 +294,7 @@ sub update_catalogs {
     }
 }
 
+# _('Internationalization')
+# _('Translate me')
+
 1;
