@@ -1,22 +1,44 @@
 package App::I18N::DB;
 use warnings;
 use strict;
-use DBI;
 use Any::Moose;
 use Encode;
+use DBI;
+use DBD::SQLite;
 
 has dbh => 
     ( is => 'rw' );
 
 sub BUILD {
     my ($self,$args) = @_;
-    if( ! $args->{dbh} ) {
+
+    if( $args->{path} ) {
+        $self->connect( $args->{path} );
+    }
+    elsif( $args->{name} ) {
+        my $dbname = $args->{name};
+        my $dbpath = File::Spec->join(  $ENV{HOME} ,  $dbname );
+        $self->connect( $dbpath );
+    }
+    elsif( ! $args->{dbh} ) {
         print "Importing database schema\n";
         my $dbh = DBI->connect("dbi:SQLite:dbname=:memory:","","",
                 { RaiseError     => 1, sqlite_unicode => 1, });
         $self->dbh( $dbh );
         $self->init_schema();
     }
+}
+
+sub connect {
+    my ($self,$dbpath) = @_;
+    my $dbh = DBI->connect("dbi:SQLite:dbname=$dbpath","","");
+    $self->dbh( $dbh );
+
+}
+
+sub close {
+    my $self = shift;
+    $self->dbh->disconnect();
 }
 
 sub init_schema {

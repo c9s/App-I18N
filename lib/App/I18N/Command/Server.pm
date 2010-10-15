@@ -12,7 +12,6 @@ use File::ShareDir qw();
 use File::Path qw(mkpath);
 use Locale::Language;
 
-
 use constant debug => 1;
 
 sub options { (
@@ -25,6 +24,17 @@ sub options { (
     'locale'    => 'locale',
 ) }
 
+=head3 %podata
+
+    { 
+        [lang_code] => { 
+            name => 'Language Name',
+            path => 'po file path',
+        },
+        ...
+    }
+
+=cut
 
 
 sub run {
@@ -69,27 +79,13 @@ sub run {
 
     # $lang = code2language('en');        # $lang gets 'English'
 
-
     $logger->info("Importing messages to sqlite memory database.");
+
     my @pofiles = ( $self->{pofile} ) || File::Find::Rule->file()->name("*.po")->in( $podir );
-
-
     my %podata = ();
-
-=head3 %podata
-
-    { 
-        [lang_code] => { 
-            name => 'Language Name',
-            path => 'po file path',
-        },
-        ...
-    }
-
-=cut
-
     for my $file ( @pofiles ) {
-        my ($langname)  = ( $file     =~ m{([a-zA-Z-_]+)\.po$} );
+
+        my ($langname)  = ( $file =~ m{([a-zA-Z-_]+)\.po$} );
         my ($code) = ( $langname =~ m{^([a-zA-Z]+)} );
         $logger->info( "Importing $langname: $file" );
         $db->import_po( $langname , $file );
@@ -112,13 +108,7 @@ sub run {
         exit;
     };
 
-#     $lme->read_po( $translation ) if -f $translation && $translation !~ m/pot$/;
-#     $lme->set_compiled_entries;
-#     $lme->compile(USE_GETTEXT_STYLE);
-#     $lme->write_po($translation);
-
     Template::Declare->init( dispatch_to => ['App::I18N::Web::View'] );
-
     my $app = App::I18N::Web->new( [
             "/api/(.*)" => "App::I18N::Web::Handler::API",
             "(/.*)"     => "App::I18N::Web::Handler",

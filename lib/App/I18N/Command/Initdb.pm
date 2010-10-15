@@ -20,6 +20,7 @@ sub options { (
 
 sub run {
     my ($self,$dbname) = @_;
+
     $dbname ||= 'i18n.sqlite';
     my $dbpath = File::Spec->join(  $ENV{HOME} ,  $dbname );
 
@@ -27,16 +28,12 @@ sub run {
         my $ans = $self->prompt( "Database $dbname exists, replace it ? (N/y)", 'n');
         return if( $ans =~ /n/i );
     }
-
     unlink( $dbpath );
 
-    my $dbh = DBI->connect("dbi:SQLite:dbname=$dbpath","","");
-
-    my $db = App::I18N::DB->new( dbh => $dbh  );
+    my $db = App::I18N::DB->new( path => $dbpath  );
     $db->init_schema();
 
-    $dbh->disconnect();
-
+    $db->close();
     print "Database $dbname ($dbpath) created.\n";
 }
 
