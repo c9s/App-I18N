@@ -15,12 +15,12 @@ $entry = $db->find( 'zh-tw', 'test' );
 
 
 ok( $entry );
-ok( $entry->id );
-ok( $entry->msgid );
-ok( $entry->lang );
-ok( $entry->msgstr );
+ok( $entry->{id} );
+ok( $entry->{msgid} );
+ok( $entry->{lang} );
+ok( $entry->{msgstr} );
 
-is( $entry->msgstr , '測試' );
+is( $entry->{msgstr} , '測試' );
 
 my $entries = $db->get_entry_list( 'zh-tw' );
 ok( @$entries );
