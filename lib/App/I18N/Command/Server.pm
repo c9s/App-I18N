@@ -77,9 +77,6 @@ sub run {
 
     $db = App::I18N::DB->new( memory => 1 );
 
-    print "Importing database schema\n";
-    $db->init_schema();
-
     # $lang = code2language('en');        # $lang gets 'English'
 
     $logger->info("Importing messages to sqlite memory database.");

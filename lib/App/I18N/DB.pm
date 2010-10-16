@@ -24,6 +24,7 @@ sub BUILD {
         my $dbh = DBI->connect("dbi:SQLite:dbname=:memory:","","",
                 { RaiseError     => 1, sqlite_unicode => 1, });
         $self->dbh( $dbh );
+        $self->init_schema;
     }
 }
 

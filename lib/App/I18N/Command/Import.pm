@@ -17,7 +17,6 @@ sub run {
 
 
     my $db = App::I18N::DB->new( memory => 1);
-    $db->init_schema;
     for my $po ( @podata ) {
         $db->import_po( $po->{lc_fullname} , $po->{path} );
     }
