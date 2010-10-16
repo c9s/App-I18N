@@ -43,12 +43,12 @@ sub init_schema {
     my ($self) = shift;
     $self->dbh->do( qq|
 
-
         create table po_strings (  
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             lang        TEXT,
             msgid       TEXT,
             msgstr      TEXT,
+            appname     varchar(64),
             updated_on  timestamp,
             updated_by  varchar(120));
 
