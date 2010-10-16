@@ -44,20 +44,35 @@ sub close {
 sub init_schema {
     my ($self) = shift;
     $self->dbh->do( qq|
-        create table po_string (  
+
+        create table annotations (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            msg_id      INTEGER reference po_strings(id),
+            --- XXX: ....
+            comment     TEXT
+            );
+
+        create table suggests (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            lang        TEXT,
+            original    TEXT,
+            translation TEXT );
+
+        create table po_strings (  
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             lang        TEXT,
             msgid       TEXT,
             msgstr      TEXT,
             updated_on  timestamp,
             updated_by  varchar(120));
+
     |);
 }
 
 # by {id}
 sub get_entry {
     my ( $self, $id ) = @_;
-    my $sth = $self->dbh->prepare(qq{ select * from po_string where id = ? });
+    my $sth = $self->dbh->prepare(qq{ select * from po_strings where id = ? });
     $sth->execute($id);
     my $data = $sth->fetchrow_hashref();
     $sth->finish;
@@ -67,7 +82,7 @@ sub get_entry {
 sub set_entry {
     my ($self,$id,$msgstr) = @_;
     die unless $id && $msgstr;
-    my $sth = $self->dbh->prepare(qq{ update po_string set msgstr = ? where id = ? });
+    my $sth = $self->dbh->prepare(qq{ update po_strings set msgstr = ? where id = ? });
     my $ret = $sth->execute( $msgstr, $id );
     $sth->finish;
     return $ret;
@@ -83,13 +98,13 @@ sub insert {
     my ( $self , $lang , $msgid, $msgstr ) = @_;
     $msgstr = decode_utf8( $msgstr );
     my $sth = $self->dbh->prepare(
-        qq| INSERT INTO po_string (  lang , msgid , msgstr ) VALUES ( ? , ? , ? ); |);
+        qq| INSERT INTO po_strings (  lang , msgid , msgstr ) VALUES ( ? , ? , ? ); |);
     $sth->execute( $lang, $msgid, $msgstr );
 }
 
 sub find {
     my ( $self, $lang , $msgid ) = @_;
-    my $sth = $self->dbh->prepare(qq| SELECT * FROM po_string WHERE lang = ? AND msgid = ? LIMIT 1;|);
+    my $sth = $self->dbh->prepare(qq| SELECT * FROM po_strings WHERE lang = ? AND msgid = ? LIMIT 1;|);
     $sth->execute( $lang, $msgid );
     my $data = $sth->fetchrow_hashref();
     $sth->finish;
@@ -102,11 +117,11 @@ sub get_unset_entry_list {
     my ($self, $lang ) = @_;
     my $sth;
     if( $lang ) {
-        $sth = $self->dbh->prepare(qq| SELECT * FROM po_string where lang = ? and msgstr = '' or msgstr is null; |);
+        $sth = $self->dbh->prepare(qq| SELECT * FROM po_strings where lang = ? and msgstr = '' or msgstr is null; |);
         $sth->execute( $lang );
     }
     else {
-        $sth = $self->dbh->prepare(qq| SELECT * FROM po_string where msgstr = '' or msgstr is null; | );
+        $sth = $self->dbh->prepare(qq| SELECT * FROM po_strings where msgstr = '' or msgstr is null; | );
         $sth->execute();
     }
     return $self->_entry_sth_to_list( $sth );
@@ -116,11 +131,11 @@ sub get_entry_list {
     my ( $self, $lang ) = @_;
     my $sth;
     if( $lang ) {
-        $sth = $self->dbh->prepare(qq| select * from po_string where lang = ? order by id desc; |);
+        $sth = $self->dbh->prepare(qq| select * from po_strings where lang = ? order by id desc; |);
         $sth->execute( $lang );
     }
     else {
-        $sth = $self->dbh->prepare(qq| select * from po_string order by id desc; | );
+        $sth = $self->dbh->prepare(qq| select * from po_strings order by id desc; | );
         $sth->execute();
     }
     return $self->_entry_sth_to_list( $sth );
@@ -144,7 +159,7 @@ sub _entry_sth_to_list {
 
 sub get_langlist {
     my $self = shift;
-    my $sth = $self->dbh->prepare("select distinct lang from po_string;");
+    my $sth = $self->dbh->prepare("select distinct lang from po_strings;");
     $sth->execute();
     my $hashref = $sth->fetchall_hashref('lang');
     $sth->finish;
