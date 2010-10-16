@@ -149,7 +149,7 @@ to msgstr (zh\_TW):
 
 # our @EXPORT = qw(_);
 
-our $VERSION = 0.03;
+our $VERSION = 0.031;
 our $LOGGER;
 our $LMExtract;
 our $MIME = MIME::Types->new();
