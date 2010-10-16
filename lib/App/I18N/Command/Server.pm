@@ -75,7 +75,10 @@ sub run {
         warn $@;
     }
 
-    $db = App::I18N::DB->new();
+    $db = App::I18N::DB->new( memory => 1 );
+
+    print "Importing database schema\n";
+    $db->init_schema();
 
     # $lang = code2language('en');        # $lang gets 'English'
 
@@ -84,6 +87,8 @@ sub run {
     my @pofiles = ( $self->{pofile} ) || File::Find::Rule->file()->name("*.po")->in( $podir );
     my %podata = ();
     for my $file ( @pofiles ) {
+
+        # XXX: Fix for locale structure
 
         my ($langname)  = ( $file =~ m{([a-zA-Z-_]+)\.po$} );
         my ($code) = ( $langname =~ m{^([a-zA-Z]+)} );

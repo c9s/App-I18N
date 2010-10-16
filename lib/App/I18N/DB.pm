@@ -20,12 +20,10 @@ sub BUILD {
         my $dbpath = File::Spec->join(  $ENV{HOME} ,  $dbname );
         $self->connect( $dbpath );
     }
-    elsif( ! $args->{dbh} ) {
-        print "Importing database schema\n";
+    elsif( $args->{memory} ) {
         my $dbh = DBI->connect("dbi:SQLite:dbname=:memory:","","",
                 { RaiseError     => 1, sqlite_unicode => 1, });
         $self->dbh( $dbh );
-        $self->init_schema();
     }
 }
 
@@ -45,6 +43,15 @@ sub init_schema {
     my ($self) = shift;
     $self->dbh->do( qq|
 
+
+        create table po_strings (  
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            lang        TEXT,
+            msgid       TEXT,
+            msgstr      TEXT,
+            updated_on  timestamp,
+            updated_by  varchar(120));
+
         create table annotations (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             msg_id      INTEGER reference po_strings(id),
@@ -57,14 +64,6 @@ sub init_schema {
             lang        TEXT,
             original    TEXT,
             translation TEXT );
-
-        create table po_strings (  
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
-            lang        TEXT,
-            msgid       TEXT,
-            msgstr      TEXT,
-            updated_on  timestamp,
-            updated_by  varchar(120));
 
     |);
 }
@@ -86,12 +85,6 @@ sub set_entry {
     my $ret = $sth->execute( $msgstr, $id );
     $sth->finish;
     return $ret;
-}
-
-sub last_id {
-    my $self = shift;
-
-
 }
 
 sub insert {

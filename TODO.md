@@ -5,8 +5,11 @@
     use this command to generate static files.
 
 * global po database by DBIx::Class (sqlite/mysql/pg backend).
+
 * merge/update via global po database.
+
 * provide a web service for managing po files.
+
 * hook google translate plugin to web editor textarea.
 * parse msgid from database
 
