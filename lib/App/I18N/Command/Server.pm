@@ -85,8 +85,18 @@ sub run {
     my %podata = ();
     for my $file ( @pofiles ) {
 
-        my ($langname)  = ( $file =~ m{([a-zA-Z-_]+)\.po$} );
-        my ($code) = ( $langname =~ m{^([a-zA-Z]+)} );
+        my $langname;
+        my $code;
+
+        if( $self->{locale} ) {
+            ($langname)  = ( $file =~ m{/([a-zA-Z-_]+)/LC_MESSAGES} );
+            ($code) = ( $langname =~ m{^([a-zA-Z]+)} );
+        }
+        else {
+            ($langname)  = ( $file =~ m{([a-zA-Z-_]+)\.po$} );
+            ($code) = ( $langname =~ m{^([a-zA-Z]+)} );
+        }
+
         $logger->info( "Importing $langname: $file" );
         $db->import_po( $langname , $file );
 
@@ -96,7 +106,6 @@ sub run {
             path => $file,
         };
     }
-
 
     $SIG{INT} = sub {
         # XXX: write sqlite data to po file here.
