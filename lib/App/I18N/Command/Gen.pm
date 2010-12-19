@@ -92,6 +92,7 @@ sub run {
     $podir = App::I18N->guess_podir( $self ) unless $podir;
     $self->{mo} = 1 if $self->{locale};
 
+    use Encode;
     File::Path::mkpath [ $output_dir ];
 
     if( $self->{locale} ) {
@@ -112,13 +113,15 @@ sub run {
 
             my $lexicon = $extract->lexicon;
             my %entries = map {   
-                $lexicon->{ $_ }
-                    ? ( $_ => $lexicon->{$_} )
+                # Encode::_utf8_on( $lexicon->{ $_ } );
+                my $msgstr = decode_utf8 ( $lexicon->{ $_ } || "" );
+                $msgstr
+                    ? ( $_ => $msgstr )
                     : () 
                 } keys %$lexicon;
 
             $logger->info( "Writing: $outfile" );
-            open FH , ">" , $outfile;
+            open FH , ">" , $outfile or die $!;
             binmode FH,":utf8";
             if( $type eq 'json' ) {
                 use JSON::XS;
