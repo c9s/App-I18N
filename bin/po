@@ -11,4 +11,6 @@ use App::I18N::Command::Update;
 
 my $cmd = shift @ARGV;
 my @args = @ARGV;
-App::I18N::Command->invoke( $cmd , @args );
+
+$cmd ? App::I18N::Command->invoke( $cmd , @args )
+     : App::I18N::Command->invoke('help');
