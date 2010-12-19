@@ -12,28 +12,6 @@ use REST::Google::Translate;
 use base qw(App::I18N::Command);
 
 
-=head1 DESCRIPTION
-
-auto - auto translate po files.
-
-=head1 OPTIONS
-
-    --from [lang]
-    --to [lang]
-    --backend [backend]
-    --locale
-    --prompt 
-    --overwrite
-    --msgstr
-    --verbose
-
-Translate zh_CN.po from en_US to zh_TW
-
-    po auto zh_CN --from en_US --to zh_TW
-
-    po auto zh_CN --from en_US --overwrite --prompt
-
-=cut
 
 sub options {
     ( 
@@ -179,3 +157,30 @@ NEXT_MSGID:
 
 
 1;
+__END__
+=head1 NAME
+
+App::I18N::Command::Auto - auto translate
+
+=head1 DESCRIPTION
+
+auto - auto translate po files.
+
+=head1 OPTIONS
+
+    --from [lang]
+    --to [lang]
+    --backend [backend]
+    --locale
+    --prompt 
+    --overwrite
+    --msgstr
+    --verbose
+
+Translate zh_CN.po from en_US to zh_TW
+
+    po auto zh_CN --from en_US --to zh_TW
+
+    po auto zh_CN --from en_US --overwrite --prompt
+
+=cut
