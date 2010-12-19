@@ -13,7 +13,7 @@ use base qw(App::I18N::Command);
 sub options { (
     'podir=s'  => 'podir',
     'locale'  => 'locale',
-    'outdir=s' => 'output_dir',
+    'output=s' => 'output_dir',
     ) }
 
 
@@ -147,3 +147,28 @@ END
 }
 
 1;
+__END__
+=head1 NAME
+
+App::I18N::Command::Gen - Export dictionary to other formats.
+
+=head1 USAGE
+
+    po gen [TYPE] [OPTIONS]
+
+TYPE:
+
+Can be C<json>, C<js>, C<pm>.
+
+=head1 OPTIONS
+
+    --podir=[path]
+            Po files directory
+
+    --locale
+            Use locale directory structure.
+
+    --output=[path]
+            Path for output.
+
+=cut
