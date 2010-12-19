@@ -188,14 +188,7 @@ END
 	div { { id is 'langlist' } };
 
 	div { { id is 'panel' }
-	
-	};
 
-
-};
-
-
-=pod
     my $translation = 
         ( $po_opts->{pofile} )
             ? $po_opts->{pofile}
@@ -233,6 +226,14 @@ END
 
         };
     }
+	
+	};
+
+
+};
+
+
+=pod
 
 =cut
 
