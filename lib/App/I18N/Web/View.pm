@@ -222,8 +222,6 @@ END
         div { { id is 'panel' };
 
 
-
-
         };
     }
 	

@@ -125,7 +125,7 @@ sub run {
     my $shareroot = 
         ( -e "./share" ) 
             ? 'share' 
-            : File::ShareDir::dist_dir( "App-Po" );
+            : File::ShareDir::dist_dir( "App-I18N" );
 
     $logger->info("share root: $shareroot");
     $logger->info("podir: $podir") if $podir;
