@@ -37,3 +37,22 @@ sub run {
 
 
 1;
+__END__
+
+=head1 NAME
+
+App::I18N::Command::Update - update mo files
+
+=head1 USAGE
+
+if you use mo file , you might need to update mo file.
+
+    $ po update --locale
+
+eg:
+
+    -project (master) % po update --mo --podir locale
+        Updating locale/zh_TW/LC_MESSAGES/project.po
+        Updating locale/zh_TW/LC_MESSAGES/project.mo
+        9 translated messages, 53 untranslated messages.
+=cut
