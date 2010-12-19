@@ -189,52 +189,39 @@ END
 
 	div { { id is 'panel' }
 
-    my $translation = 
-        ( $po_opts->{pofile} )
-            ? $po_opts->{pofile}
-            : $po_opts->{language}
-                ? File::Spec->catfile( $podir, $po_opts->{language} . ".po")
-                : undef;
-
-    if( $translation ) {
-        show 'edit_po', $handler, $translation;
-    }
-    else {
-        # list language
-        use File::Find::Rule;
-        my @files  = File::Find::Rule->file()->name( "*.po" )->in( $podir );
-        foreach my $file (@files) {
-            my ($langname) = ( $file =~ m{([a-zA-Z-_]+)\.po$}i );
-            input { attr { type is 'button', value is $file , onclick is qq|
-                    return (function(e){  
-                        jQuery.ajax({
-                            url: '/edit_po',
-                            data: { lang: "$langname" },
-                            dataType: 'html',
-                            type: 'get',
-                            success: function(html) {
-                                jQuery('#panel').html( html );
-                            }
-                        });
-            })(this);| } };
-        }
-
-        div { { id is 'panel' };
-
-
-        };
-    }
-	
 	};
 
+#     my $translation = 
+#         ( $po_opts->{pofile} )
+#             ? $po_opts->{pofile}
+#             : $po_opts->{language}
+#                 ? File::Spec->catfile( $podir, $po_opts->{language} . ".po")
+#                 : undef;
+# 
+#     if( $translation ) {
+#         show 'edit_po', $handler, $translation;
+#     }
+#     else {
+#         # list language
+#         use File::Find::Rule;
+#         my @files  = File::Find::Rule->file()->name( "*.po" )->in( $podir );
+#         foreach my $file (@files) {
+#             my ($langname) = ( $file =~ m{([a-zA-Z-_]+)\.po$}i );
+#             input { attr { type is 'button', value is $file , onclick is qq|
+#                     return (function(e){  
+#                         jQuery.ajax({
+#                             url: '/edit_po',
+#                             data: { lang: "$langname" },
+#                             dataType: 'html',
+#                             type: 'get',
+#                             success: function(html) {
+#                                 jQuery('#panel').html( html );
+#                             }
+#                         });
+#             })(this);| } };
+#         }
+#     }
 
 };
-
-
-=pod
-
-=cut
-
-
 
 1;
