@@ -122,10 +122,9 @@ sub run {
 
             $logger->info( "Writing: $outfile" );
             open FH , ">" , $outfile or die $!;
-            binmode FH,":utf8";
+            # binmode FH,":utf8";
             if( $type eq 'json' ) {
                 use JSON::XS;
-                print FH qq|/* $warnings */\n\n|;
                 print FH encode_json( \%entries );
             }
             elsif ( $type eq 'js' ) {
