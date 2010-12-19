@@ -113,8 +113,8 @@ sub run {
             my $lexicon = $extract->lexicon;
             my %entries = map {   
                 $lexicon->{ $_ }
-                    ?  $_ => $lexicon->{ $_ }
-                    :  () 
+                    ? ( $_ => $lexicon->{$_} )
+                    : () 
                 } keys %$lexicon;
 
             $logger->info( "Writing: $outfile" );
