@@ -111,13 +111,18 @@ sub run {
             $extract->read_po($pofile);
 
             my $lexicon = $extract->lexicon;
+            my %entries = map {   
+                $lexicon->{ $_ }
+                    ?  $_ => $lexicon->{ $_ }
+                    :  () 
+                } keys %$lexicon;
 
             $logger->info( "Writing: $outfile" );
             open FH , ">" , $outfile;
             if( $type eq 'json' ) {
                 use JSON::XS;
                 print FH qq|/* $warnings */\n\n|;
-                print FH encode_json( $lexicon );
+                print FH encode_json( \%entries );
             }
             elsif ( $type eq 'js' ) {
                 use JSON::XS;

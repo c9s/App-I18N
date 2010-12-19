@@ -15,6 +15,7 @@ sub alias {
         "s" => "server",
         "p" => "parse",
         "l" => "lang",
+        "export" => 'gen',
     );
 }
 
