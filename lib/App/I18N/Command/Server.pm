@@ -24,17 +24,16 @@ sub options { (
     'locale'    => 'locale',
 ) }
 
-=head3 %podata
-
-    { 
-        [lang_code] => { 
-            name => 'Language Name',
-            path => 'po file path',
-        },
-        ...
-    }
-
-=cut
+#  %podata
+# 
+#     { 
+#         [lang_code] => { 
+#             name => 'Language Name',
+#             path => 'po file path',
+#         },
+#         ...
+#     }
+# 
 
 
 sub run {
@@ -153,3 +152,24 @@ sub run {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+App::I18N::Command::Server - web server / web editing interface.
+
+=head1 USAGE
+
+Start a web server to edit po file:
+
+    $ po server -f po/en.po
+
+Start a web server to edit po file of specified language:
+
+    $ po server --lang en
+
+Extract message from files and start a web server:
+
+    $ po server --dir lib --dir share/static --lang en
+
+=cut
