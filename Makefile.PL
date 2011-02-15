@@ -28,6 +28,7 @@ requires 'App::CLI';
 requires 'Data::Dumper';
 requires 'REST::Google::Translate';
 requires 'Locale::Language';
+requires 'YAML::XS';
 
 install_script 'bin/po';
 
