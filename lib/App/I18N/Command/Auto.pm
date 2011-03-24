@@ -20,7 +20,7 @@ sub options {
         'backend=s' => 'backend',
         'locale'  => 'locale',
         'verbose' => 'verbose',
-        'msgstr' => 'from_msgstr',   # translate from existing msgstr instead of translating from msgid.
+        'msgstr' => 'msgstr',   # translate from existing msgstr instead of translating from msgid.
         'overwrite' => 'overwrite',  # overwrite existing msgstr
         'p|prompt'    => 'prompt',
     )
@@ -75,21 +75,29 @@ sub run {
 
     my $from_lang_s = $from_lang;
     my $to_lang_s = $to_lang;
-    ($from_lang_s) = ( $from_lang  =~ m{^([a-z]+)(_\w+)?} );
-    ($to_lang_s)   = ( $to_lang    =~ m{^([a-z]+)(_\w+)?} );
 
+    # ($from_lang_s) = ( $from_lang  =~ m{^([a-z]+)(_\w+)?} );
+    # ($to_lang_s)   = ( $to_lang    =~ m{^([a-z]+)(_\w+)?} );
+
+
+    $logger->info( "Initialing REST::Google" );
     REST::Google::Translate->http_referer('http://google.com');
 
 NEXT_MSGID:
     for my $i ($ext->msgids()) {
+        my $msgid  = $i;
         my $msgstr = $ext->msgstr( $i );
 
-        next if $msgstr && ! $self->{overwrite};
+        # skip if no msgstr and no overwrite.
+        next if $msgstr && ! $self->{overwrite} && ! $self->{msgstr};
 
+        # translate from msgstr
         $i = $msgstr if $msgstr && $self->{msgstr};
 
-        $logger->info( "Translating: [ $i ]" );
-        $logger->info( "  Original translation: [ $msgstr ]" ) if $msgstr;
+        $logger->info( "msgid: $msgid");
+        $logger->info( "msgstr: $msgstr" ) if $msgstr;
+        $logger->info( "tranlating from msgstr" ) if $self->{msgstr};
+        $logger->info( "$from_lang_s => $to_lang_s" );
 
         my $retry = 1;
         while($retry--) {
@@ -101,6 +109,7 @@ NEXT_MSGID:
 
 
             };
+
             if( $@ ) {
                 # XXX: let it retry for 3 times
                 $retry = 2;
@@ -110,6 +119,8 @@ NEXT_MSGID:
 
             if ($res->responseStatus == 200) {
                 my $translated = $res->responseData->translatedText;
+                $logger->info( "[$translated]" );
+
                 if( ($msgstr && $self->{overwrite}) 
                         || ! $msgstr ) {
                     if( $msgstr ) {
