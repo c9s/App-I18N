@@ -79,9 +79,13 @@ sub run {
     # ($from_lang_s) = ( $from_lang  =~ m{^([a-z]+)(_\w+)?} );
     # ($to_lang_s)   = ( $to_lang    =~ m{^([a-z]+)(_\w+)?} );
 
+    $logger->info( "Translating: $from_lang_s => $to_lang_s" );
 
     $logger->info( "Initialing REST::Google" );
     REST::Google::Translate->http_referer('http://google.com');
+
+    binmode STDERR, ":utf8";
+    
 
 NEXT_MSGID:
     for my $i ($ext->msgids()) {
@@ -94,20 +98,20 @@ NEXT_MSGID:
         # translate from msgstr
         $i = $msgstr if $msgstr && $self->{msgstr};
 
-        $logger->info( "msgid: $msgid");
-        $logger->info( "msgstr: $msgstr" ) if $msgstr;
-        $logger->info( "tranlating from msgstr" ) if $self->{msgstr};
-        $logger->info( "$from_lang_s => $to_lang_s" );
+        $logger->info( "********" );
+        $logger->info( " msgid: $msgid");
+        $logger->info( " msgstr: $msgstr" ) if $msgstr;
+
+        $logger->info( " tranlating from msgstr" ) if $self->{msgstr};
+        $logger->info( " tranlating from msgid"  ) if ! $self->{msgstr};
 
         my $retry = 1;
         while($retry--) {
             my $res;
             eval {
                 $res = REST::Google::Translate->new(
-                            q => $i,
-                            langpair => $from_lang_s . '|' . $to_lang_s );
-
-
+                    q => $i,
+                    langpair => $from_lang_s . '|' . $to_lang_s );
             };
 
             if( $@ ) {
@@ -119,15 +123,10 @@ NEXT_MSGID:
 
             if ($res->responseStatus == 200) {
                 my $translated = $res->responseData->translatedText;
-                $logger->info( "[$translated]" );
+                $logger->info( "translated: " . encode_utf8( $translated ) );
 
                 if( ($msgstr && $self->{overwrite}) 
                         || ! $msgstr ) {
-                    if( $msgstr ) {
-                        $logger->info( encode_utf8("  Translation overwrited: [$i] => [$translated]") );
-                    } else {
-                        $logger->info( encode_utf8("  Translation: [$i] => [$translated]" ) );
-                    }
 
                     if( $self->{prompt} ) {
                         my $ans = $self->prompt( "Apply this ? (Y/n)" );

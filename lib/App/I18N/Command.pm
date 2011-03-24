@@ -37,7 +37,10 @@ sub prompt {
     print STDERR $msg;
     my $ans = <STDIN>;
     chomp($ans);
+    $ans =~ s{[\r\n]}{}g;
+
     $ans ||= $default;
+
     return $ans;
 }
 
