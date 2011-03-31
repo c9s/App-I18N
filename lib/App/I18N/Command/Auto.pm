@@ -133,18 +133,19 @@ NEXT_MSGID:
                         next NEXT_MSGID if $ans =~ /^\s*n\s*$/i;
 
                         if ( $ans !~ /^\s*y\s*$/i ) {
-                            print STDERR qq|Applying "$ans"\n|;
+                            print STDERR qq|Applying "$msgid" => "$ans"\n|;
                             # it's user typed msgstr
-                            $ext->set_msgstr( $i, $ans );
+                            $ext->set_msgstr( $msgid , $ans );
                             next NEXT_MSGID;
                         }
                     }
-                    print STDERR qq|Applying "$translated"\n|;
-                    $ext->set_msgstr($i, encode_utf8( $translated ) );
+                    print STDERR qq|Applying "$msgid" => "$translated"\n|;
+                    $ext->set_msgstr($msgid , encode_utf8( $translated ) );
                 }
             }
             else {
-                $ext->set_msgstr($i, undef) if $self->{overwrite};
+                print STDERR qq|Clear "$msgid"\n|;
+                $ext->set_msgstr($msgid , undef) if $self->{overwrite};
             }
 
         }
