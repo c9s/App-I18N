@@ -71,6 +71,41 @@ sub _check_mime_type {
     return 1;
 }
 
+
+sub parse_by_pattern {
+    my ( $self, $lme , $file, $patterns ) = @_;
+
+    open FH, "<" , $file;
+    my @ps = map { qr/$_/ } @$patterns;
+    for my $line ( <FH> ) {
+        for my $p ( @ps ) {
+            if( $line =~ $p ) {
+                print "- Pattern Text: $1\n";
+                $lme->set_msgstr( $1 , "" );
+            }
+        }
+    }
+    close FH;
+}
+
+sub extract_messages_patterns {
+    my ( $self, $patterns , @dirs ) = @_;
+    my @files = map { ( -d $_ ) ? File::Find::Rule->file->in($_) : $_ } @dirs;
+
+    my $logger = $self->logger;
+    my $lme = $self->lm_extract;
+    foreach my $file (@files) {
+        next if $file =~ m{(^|/)[\._]svn/};
+        next if $file =~ m{\~$};
+        next if $file =~ m{\.pod$};
+        next if $file =~ m{^\.git};
+        next unless $self->_check_mime_type($file);
+        $logger->info("Extracting messages from '$file'");
+        $lme->extract_file($file);
+        $self->parse_by_pattern( $lme , $file , $patterns );
+    }
+}
+
 sub extract_messages {
     my ( $self, @dirs ) = @_;
     my @files = map { ( -d $_ ) ? File::Find::Rule->file->in($_) : $_ } @dirs;

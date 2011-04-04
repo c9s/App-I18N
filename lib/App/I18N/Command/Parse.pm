@@ -29,11 +29,12 @@ parse [options] [path]
 
 sub options {
     (
-    'q|quiet'  => 'quiet',
-    'l|lang=s' => 'language',
-    'locale'   => 'locale',   # XXX: use locale directory structure
-    'podir=s'  => 'podir',
-    'mo'       => 'mo',
+    'q|quiet'   => 'quiet',
+    'l|lang=s'  => 'language',
+    'locale'    => 'locale',   # XXX: use locale directory structure
+    'podir=s'   => 'podir',
+    'pattern=s@' => 'patterns',
+    'mo'        => 'mo',
     );
 }
 
@@ -62,8 +63,14 @@ sub run {
     $podir = App::I18N->guess_podir( $self ) unless $podir;
     $self->{mo} = 1 if $self->{locale};
 
+
     my @dirs = @args;
-    App::I18N->extract_messages( @dirs );
+
+    if( $self->{patterns} ) {
+        App::I18N->extract_messages_patterns( $self->{patterns} , @dirs );
+    } else {
+        App::I18N->extract_messages( @dirs );
+    }
 
     # update app.pot catalog
     mkpath [ $podir ];
