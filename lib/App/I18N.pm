@@ -40,10 +40,10 @@ Locale::Maketext::Lexicon::set_option( 'style'       => 'gettext' );
 sub lm_extract {
     return $LMExtract ||= Locale::Maketext::Extract->new(
         plugins => {
-            'Locale::Maketext::Extract::Plugin::PPI' => [ 'pm','pl' ],
+            'Locale::Maketext::Extract::Plugin::PPI' => [ 'pm','pl', 'php' ],
             'tt2' => [ ],
             # 'perl' => ['pl','pm','js','json'],
-            'perl' => [ '*' ],   # _( ) , gettext( ) , loc( ) ...
+            'perl' => [ 'pm','pl','php','json','js' ],   # _( ) , gettext( ) , loc( ) ...
             'mason' => [ ] ,
             'generic' => [ '*' ],
         },
