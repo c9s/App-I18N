@@ -45,7 +45,7 @@ sub lm_extract {
             # 'perl' => ['pl','pm','js','json'],
             'perl' => [ 'pm','pl','php','json','js' ],   # _( ) , gettext( ) , loc( ) ...
             'mason' => [ ] ,
-            'generic' => [ '*' ],
+            # 'generic' => [ '*' ],
         },
         verbose => 1, warnings => 1 );
 }

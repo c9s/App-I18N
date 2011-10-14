@@ -101,7 +101,6 @@ NEXT_MSGID:
         $logger->info( "********" );
         $logger->info( " msgid: $msgid");
         $logger->info( " msgstr: $msgstr" ) if $msgstr;
-
         $logger->info( " tranlating from msgstr" ) if $self->{msgstr};
         $logger->info( " tranlating from msgid"  ) if ! $self->{msgstr};
 
@@ -144,8 +143,10 @@ NEXT_MSGID:
                 }
             }
             else {
-                print STDERR qq|Clear "$msgid"\n|;
-                $ext->set_msgstr($msgid , undef) if $self->{overwrite};
+                $logger->error( "Error:" . $res->responseStatus . ', ' . $res->responseDetails );
+                last;
+                # print STDERR qq|Clear "$msgid"\n|;
+                # $ext->set_msgstr($msgid , undef) if $self->{overwrite};
             }
 
         }
