@@ -96,8 +96,35 @@ sub run {
     File::Path::mkpath [ $output_dir ];
 
     if( $self->{locale} ) {
+        my $warnings = $self->_warnings;
+        my @pofiles = File::Find::Rule->file->name( "*.po" )->in( $podir );
+        for my $pofile ( @pofiles ) {
+            my $extract = Locale::Maketext::Extract->new;
+            my ($lang,$domain) = ($pofile =~ m{([^/]+)/LC_MESSAGES/(\w+)\.po$} );   # get en_US or zh_TW ... etc
+            my $ext = $type;  # "json , js, pl, pm, php";
+            my $outfile = File::Spec->join( $output_dir , "$lang.$ext" );
 
+            $logger->info( "Reading po file: $pofile" );
+            $extract->read_po($pofile);
 
+            my $lexicon = $extract->lexicon;
+            my %entries = map {   
+                # Encode::_utf8_on( $lexicon->{ $_ } );
+                my $msgstr = decode_utf8 ( $lexicon->{ $_ } || "" );
+                $msgstr
+                    ? ( $_ => $msgstr )
+                    : () 
+                } keys %$lexicon;
+
+            $logger->info( "Writing: $outfile" );
+            open FH , ">" , $outfile or die $!;
+            # binmode FH,":utf8";
+            if( $type eq 'json' ) {
+                use JSON::XS;
+                print FH encode_json( \%entries );
+            }
+            close FH;
+        }
     }
     else {
         my $warnings = $self->_warnings;
